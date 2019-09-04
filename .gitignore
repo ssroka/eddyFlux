@@ -1,3 +1,19 @@
+# large files
 *.mat
 *.zip
 *.tar
+*.gz
+
+# images
+*.jpg
+*.png
+*.eps
+*.fig
+./imgs_channel/*
+
+# tex remnants
+*.bbl
+*.aux
+*.blg
+*.log
+
