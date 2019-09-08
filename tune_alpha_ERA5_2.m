@@ -3,10 +3,13 @@ clear;close all;clc
 addpath('~/Documents/MATLAB/util/')
 
 flag_load_new_vars = false;
+filter_flag        = 'zonal'; % 'box' or 'zonal'
 patch_str = 'Kur'; % 'GS'   'Kur'
 land_src = '/Volumes/SydneySroka_Anton/ERA5_2018_Dec_1_0_LandSeaMask.nc';
 
 % ---------- Parameters --------------
+% filter parameters
+L = 500000; % [m] filtering box edge length
 % wind-related
 rho_a = 1.2;     % kg m^-3
 c_p_air = 1000;  % J / kg / K
@@ -16,8 +19,7 @@ CD_ref = 1e-3;   % reference drag coefficient
 
 lsm = ncread(land_src,'lsm');
 
-
-for year = 1
+for year = 2
     
     switch year
         case 1 % 2003
@@ -48,14 +50,6 @@ for year = 1
     patch_lon = (lon>lon_bnds(1))&(lon<lon_bnds(2));
     
     patch_mat = sprintf('%s_%d_lat_%d_%d_lon_%d_%d.mat',patch_str,time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
-    
-    %{
-      [X,Y] = create_grid(lat(patch_lat),lon(patch_lon));
-      x = X(patch_lat,patch_lon);
-      y = Y(patch_lat,patch_lon);
-      x_dist = (x(end,end))-(x(end,1));
-      y_dist = (y(1,1))-(y(end,1));
-    %}
     
     SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
     DT_patch  = zeros(sum(patch_lon),sum(patch_lat),length(time));
@@ -94,11 +88,30 @@ for year = 1
     else
         load(patch_mat)
     end
-     
+    
+    
     for tt = 1:length(time)
         
-        SST_patch_CTRL =  repmat(nanmean(SST_patch(:,:,tt)),sum(patch_lon),1); %
-        SST_patch_CTRL(lsm_patch>0) = NaN;
+        switch filter_flag
+            case 'box'
+                [X,Y]  = create_grid(lon(patch_lon),lat(patch_lat));
+                X_dist = abs(X(end,end))-(X(end,1));
+                Y_dist = abs(Y(1,1)-Y(end,1));
+                Nx     = floor(X_dist/L)+mod(floor(X_dist/L),2)-1;
+                Ny     = floor(Y_dist/L)+mod(floor(Y_dist/L),2)-1;
+                
+                SST_patch_CTRL = imboxfilt(SST_patch(:,:,tt),[Nx Ny]);
+                SST_patch_CTRL(lsm_patch>0) = NaN;
+            case 'zonal'
+                [X,Y]  = create_grid(lon(patch_lon),lat(patch_lat));
+                X_dist = abs(X(end,end))-(X(end,1));
+                Y_dist = abs(Y(1,1)-Y(end,1));
+                Nx     = floor(X_dist/L)+mod(floor(X_dist/L),2)-1;
+                Ny     = floor(Y_dist/L)+mod(floor(Y_dist/L),2)-1;
+                
+                SST_patch_CTRL =  repmat(nanmean(SST_patch(:,:,tt)),sum(patch_lon),1); %
+                SST_patch_CTRL(lsm_patch>0) = NaN;
+        end
         
         SST_prime(:,:,tt) = SST_patch(:,:,tt) - SST_patch_CTRL;
         
@@ -154,14 +167,24 @@ end
     set(gcf,'color','w')
     
     figure
-    contourf(lon(patch_lon),lat(patch_lat),nanmean(SST_prime,3)')
+    contourf(lon(patch_lon),lat(patch_lat),nanmedian(SST_prime,3)')
     colorbar
     xlabel(' Deg lon ')
     ylabel(' Deg lat ')
     title(sprintf(' SST'' [K] (mean DJFM %d)',time(end).Year),'interpreter','latex')
     set(gca,'ydir','normal','fontsize',20)
     set(gcf,'color','w')
-    
+        
+    figure
+    contourf(lon(patch_lon),lat(patch_lat),nanmedian(SST_prime,3)')
+    colorbar
+    xlabel(' Deg lon ')
+    ylabel(' Deg lat ')
+    t_str = sprintf('SST'' [K] (mean DJFM %d)\n with %s SST'' ',time(end).Year,desc_str);
+    title(t_str,'interpreter','latex')
+    set(gca,'ydir','normal','fontsize',20)
+    set(gcf,'color','w')
+
     figure
     imagesc(lon(patch_lon),lat(patch_lat),nanmean(DT_patch,3)')
     colorbar
@@ -290,6 +313,7 @@ end
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_03','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_prime_03','-dpng')
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_box_SST_prime_03','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_DT_03','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_Umag_03','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_RH_03','-dpng')
@@ -307,6 +331,10 @@ print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_CDs_03','-dpng')
 print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_CDL_03','-dpng')
 
 
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_prime_zonal_03','-dpng')
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_prime_zonal_07','-dpng')
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_prime_box_03','-dpng')
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_SST_prime_box_07','-dpng')
 
 
 %}

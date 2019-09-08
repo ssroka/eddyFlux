@@ -1,4 +1,11 @@
 function [X,Y] = create_grid(lat,lon)
+% INPUT
+%     lat: vector of latitudes (degrees)
+%     lon: vector of longitude (degrees)
+% OUTPUT
+%      [X,Y] set of coordinates in cartesian with the origin at the left
+%      and
+
 
 X = zeros(length(lat),length(lon));
 Y = zeros(length(lat),length(lon));
