@@ -93,7 +93,7 @@ colorbar
 xlabel(' Deg lon ')
 ylabel(' Deg lat ')
 set(gca,'fontsize',18)
-t_str = sprintf('$$\\alpha_s$$ (median DJFM %d) from full field ERA5\n with %s $$\bar{SST}$$ ',time(end).Year,desc_str);
+t_str = sprintf('$$\\alpha_s$$ (median DJFM %d) from full field ERA5\n with %s $$\\overline{SST}$$ ',time(end).Year,desc_str);
 title(t_str,'interpreter','latex')
 set(gca,'ydir','normal','fontsize',20)
 
@@ -113,7 +113,7 @@ colorbar
 xlabel(' Deg lon ')
 ylabel(' Deg lat ')
 set(gca,'fontsize',18)
-t_str = sprintf('$$\\alpha_L$$ (median DJFM %d) from full field ERA5\n with %s $$\bar{SST}$$ ',time(end).Year,desc_str);
+t_str = sprintf('$$\\alpha_L$$ (median DJFM %d) from full field ERA5\n with %s $$\\overline{SST}$$ ',time(end).Year,desc_str);
 title(t_str,'interpreter','latex')
 set(gca,'ydir','normal','fontsize',20)
 

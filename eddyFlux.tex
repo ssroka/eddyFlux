@@ -297,7 +297,6 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \end{align}
 
 
-
 \begin{figure}[h!]
 \centering
 \begin{subfigure}[t]{0.49\textwidth}
@@ -361,14 +360,27 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 
 \begin{figure}[h!]
 \centering
-\begin{subfigure}[t]{\textwidth}
+\begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_SST_prime_zonal_03.png}
 \end{subfigure}
-\begin{subfigure}[t]{\textwidth}
+\begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_SST_prime_box_03.png}
 \end{subfigure}
-\caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features.}
+\caption{The median of $SST'$ for 2003 where $\overline{SST}$ is computed with a zonal (left) vs box (right) average.}
 \end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.49\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_SST_prime_zonal_07.png}
+\end{subfigure}
+\begin{subfigure}[t]{0.49\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_SST_prime_box_07.png}
+\end{subfigure}
+\caption{The median of $SST'$ for 2003 where $\overline{SST}$ is computed with a zonal (left) vs box (right) average.}
+\end{figure}
+
+
 
 \begin{figure}[h!]
 \centering
@@ -392,8 +404,65 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features.}
 \end{figure}
 
+\section{Using a constant $\alpha$ might introduce too much error}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/alpha_const_error_box_03.png}
+\end{subfigure}
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/alpha_const_error_box_07.png}
+\end{subfigure}
+\caption{Each quantity -the flux from ERA5 (left), the flux calculation with constant $\alpha$ and spatially and temporally varying ERA5 fields of SST and air properties (middle), and the difference between these two flux calculations (right) - is calculated at each 6hour point then the median of these is displayed here. The constant $\alpha$ is chosen by taking the median of all calculated $\alpha$'s.}
+\end{figure}
+
+\section{Using a linear $\alpha$ also likely has way too much error}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/alpha_linear_noW.png}
+\caption{There appears to be some correlation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/W_Gaus.png}
+\caption{There appears to be some correlation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/alpha_linear_Gaus.png}
+\caption{There appears to be some correlation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/alpha_linear_SST.png}
+\caption{There appears to be some correlation}
+\end{figure}
 
 
+\section{Is the $\mathbb{V}(SST)$ correlated with the average flux?}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/var_vs_flux.png}
+\caption{There appears to be some correlation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/var_vs_flux_SST_prime.png}
+\caption{There appears to be some correlation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/var_vs_flux_SST_prime_med.png}
+\caption{There appears to be some correlation}
+\end{figure}
 
 \appendix
 \section{Proving the curl/divergence and cross-wind/down-wind gradient relationships}

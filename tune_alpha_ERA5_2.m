@@ -3,7 +3,7 @@ clear;close all;clc
 addpath('~/Documents/MATLAB/util/')
 
 flag_load_new_vars = false;
-filter_flag        = 'zonal'; % 'box' or 'zonal'
+filter_flag        = 'box'; % 'box' or 'zonal'
 patch_str = 'Kur'; % 'GS'   'Kur'
 land_src = '/Volumes/SydneySroka_Anton/ERA5_2018_Dec_1_0_LandSeaMask.nc';
 
@@ -19,13 +19,23 @@ CD_ref = 1e-3;   % reference drag coefficient
 
 lsm = ncread(land_src,'lsm');
 
-for year = 2
-    
+for year = 3
+    close all
+    clearvars -except year CD_ref L Lv c_p_air filter_flag flag_load_new_vars land_src lsm patch_str rho_a
     switch year
-        case 1 % 2003
+        case 3 % 2003
             srcJFM = '/Volumes/SydneySroka_Anton/ERA5_2003_JFM_31d_6h.nc';
             srcD = '/Volumes/SydneySroka_Anton/ERA5_2002_Dec_31d_6h.nc';
-        case 2 % 2007
+        case 4 % 2004
+            srcJFM = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2004_JFM_31d_6h.nc';
+            srcD = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2003_Dec_31d_6h.nc';
+        case 5 % 2005
+             srcJFM = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2005_JFM_31d_6h.nc';
+            srcD = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2004_Dec_31d_6h.nc';
+        case 6 % 2006
+               srcJFM = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2006_JFM_31d_6h.nc';
+            srcD = '/Volumes/SydneySroka_Remy/eddyFlux_data/ERA5_2005_Dec_31d_6h.nc';
+        case 7 % 2007
             srcJFM = '/Volumes/SydneySroka_Anton/ERA5_2007_JFM_31d_6h.nc';
             srcD = '/Volumes/SydneySroka_Anton/ERA5_2006_Dec_31d_6h.nc';
     end
@@ -97,10 +107,10 @@ for year = 2
                 [X,Y]  = create_grid(lon(patch_lon),lat(patch_lat));
                 X_dist = abs(X(end,end))-(X(end,1));
                 Y_dist = abs(Y(1,1)-Y(end,1));
-                Nx     = floor(X_dist/L)+mod(floor(X_dist/L),2)-1;
-                Ny     = floor(Y_dist/L)+mod(floor(Y_dist/L),2)-1;
+                Nx     = floor(X_dist/L);
+                Ny     = floor(Y_dist/L);
                 
-                SST_patch_CTRL = imboxfilt(SST_patch(:,:,tt),[Nx Ny]);
+                SST_patch_CTRL = smooth2a(SST_patch(:,:,tt),Ny, Nx);
                 SST_patch_CTRL(lsm_patch>0) = NaN;
             case 'zonal'
                 [X,Y]  = create_grid(lon(patch_lon),lat(patch_lat));
@@ -144,7 +154,10 @@ for year = 2
     smooth_a;
     CDs = CD_ref.*(1+nanmean(SST_prime,3).*as_sm);
     CDL = CD_ref.*(1+nanmean(SST_prime,3).*aL_sm);
-   save(sprintf('CD_%d_lat_%d_%d_lon_%d_%d.mat',time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2)),'CDs','CDL')
+    filename_CD = sprintf('CD_%d_lat_%d_%d_lon_%d_%d.mat',time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
+    save(filename_CD,'CDs','CDL')
+    filename_data = sprintf('data_%s_%d_lat_%d_%d_lon_%d_%d.mat',filter_flag,time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
+    save(filename_data)
 
 end
 
@@ -155,7 +168,6 @@ end
     colorbar
     title(['SST [K] (DJFM)  ' datestr(time(1),'yyyy')])
     set(gca,'ydir','reverse','xdir','reverse','fontsize',24)
-      
     
     figure
     contourf(lon(patch_lon),lat(patch_lat),nanmean(SST_patch,3)',30,'k')
@@ -167,7 +179,7 @@ end
     set(gcf,'color','w')
     
     figure
-    contourf(lon(patch_lon),lat(patch_lat),nanmedian(SST_prime,3)')
+    contourf(lon(patch_lon),lat(patch_lat),nanmean(SST_prime,3)')
     colorbar
     xlabel(' Deg lon ')
     ylabel(' Deg lat ')
@@ -175,15 +187,17 @@ end
     set(gca,'ydir','normal','fontsize',20)
     set(gcf,'color','w')
         
+%%% 
     figure
     contourf(lon(patch_lon),lat(patch_lat),nanmedian(SST_prime,3)')
     colorbar
     xlabel(' Deg lon ')
     ylabel(' Deg lat ')
-    t_str = sprintf('SST'' [K] (mean DJFM %d)\n with %s SST'' ',time(end).Year,desc_str);
+    t_str = sprintf('SST'' [K] (median DJFM %d)\n with %s SST'' ',time(end).Year,desc_str);
     title(t_str,'interpreter','latex')
     set(gca,'ydir','normal','fontsize',20)
     set(gcf,'color','w')
+%%%
 
     figure
     imagesc(lon(patch_lon),lat(patch_lat),nanmean(DT_patch,3)')
@@ -303,8 +317,6 @@ end
     set(gcf,'color','w')
 
     %}
-
-
 
 
 
