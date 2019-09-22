@@ -2,7 +2,7 @@
 clear;close all;clc
 addpath('~/Documents/MATLAB/util/')
 
-flag_load_new_vars = false;
+flag_load_new_vars = true;
 filter_flag        = 'box'; % 'box' or 'zonal'
 patch_str = 'Kur'; % 'GS'   'Kur'
 land_src = '/Volumes/SydneySroka_Anton/ERA5_2018_Dec_1_0_LandSeaMask.nc';
@@ -59,27 +59,17 @@ for year = 3
     patch_lat = (lat>lat_bnds(1))&(lat<lat_bnds(2));
     patch_lon = (lon>lon_bnds(1))&(lon<lon_bnds(2));
     
-    patch_mat = sprintf('%s_%d_lat_%d_%d_lon_%d_%d.mat',patch_str,time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
-    
-    SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    DT_patch  = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    U_mag     = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    RH_patch  = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    Q_s  = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    Q_L  = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    
-    as = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    aL = zeros(sum(patch_lon),sum(patch_lat),length(time));
-    
     lsm_patch = lsm(patch_lon,patch_lat);
     
+    patch_mat = sprintf('%s_%d_lat_%d_%d_lon_%d_%d.mat',patch_str,time(end).Year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
+
     if flag_load_new_vars
     % SSHF J m^-2 / (24 hours in seconds) = W m^-2 and (-1) since ERA5
     % has a "positive downward" convention
     [slhf_patch] = get_patch('slhf',srcD,srcJFM,1./(-1*60*60),patch_lon,patch_lat,lsm_patch,true);
     % SSHF J m^-2 / (24 hours in seconds) = W m^-2 and (-1) since ERA5
     % has a "positive downward" convention
-    [sshf_patch] = get_patch('sshf',srcD,srcJFM,1./(60*60),patch_lon,patch_lat,lsm_patch,true);
+    [sshf_patch] = get_patch('sshf',srcD,srcJFM,1./(-1*60*60),patch_lon,patch_lat,lsm_patch,true);
     % SST [K]
     [SST_patch] = get_patch('sst',srcD,srcJFM,1,patch_lon,patch_lat,lsm_patch,true);
     % t2m [K]
@@ -97,7 +87,17 @@ for year = 3
          'P0_patch','u10_patch','v10_patch','time','lsm_patch');
     else
         load(patch_mat)
-    end
+    end    
+        
+    SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    DT_patch  = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    U_mag     = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    RH_patch  = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    Q_s  = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    Q_L  = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    
+    as = zeros(sum(patch_lon),sum(patch_lat),length(time));
+    aL = zeros(sum(patch_lon),sum(patch_lat),length(time));
     
     
     for tt = 1:length(time)
