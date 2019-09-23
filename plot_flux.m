@@ -18,7 +18,7 @@ CD_ref = 1e-3;   % reference drag coefficient
 
 lsm = ncread(land_src,'lsm');
 
-for year = 3
+for year = 4:7
     close all
     clearvars -except year CD_ref L Lv c_p_air filter_flag flag_load_new_vars land_src lsm patch_str rho_a
     switch year
@@ -82,13 +82,15 @@ for year = 3
     t_str = sprintf('Surface Sensible Heat Flux [W/$$m^{-2}$$] \n (mean DJFM %d) directly from ERA5',time(end).Year);
     title(t_str,'interpreter','latex')
     set(gca,'ydir','normal','fontsize',20)
-    set(gcf,'color','w')    
+    set(gcf,'color','w','position',[84  333        1169         449])    
     
     
 end
 
 
 %{
+
+print('/Users/ssroka/MIT/Research/eddyFlux/imgs_channel/era5_mean_sshf_slhf_DJFM_03','-dpng')
 
 
 
