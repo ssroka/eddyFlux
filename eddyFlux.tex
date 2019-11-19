@@ -124,6 +124,17 @@ From \citep{Chelton2004}, the coupling coefficient is between 0.2 and 0.44. A de
 \caption{\citet{Aiu2010}}
 \end{figure}
 
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.49\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/SSH_03.png}
+\end{subfigure}
+\begin{subfigure}[t]{0.49\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/SSH_07.png}
+\end{subfigure}
+\end{figure}
+
+
 \begin{table}[h!]
 \begin{tabular}{llll}
 $\bar{\bullet}$ & zonal average & $\bullet'$ & zonal anomaly\\
@@ -160,7 +171,7 @@ q_a &= q_a(\overline{T_a}+T_a',\overline{T_d}+T_d',\overline{p_0}+p_0')
 
 \begin{align}
 \alpha_s = \frac{1}{T'}\left( 1-\frac{Q_S}{\rho_a c_p C_D^* \Vmag{U} (T_o-T_a)} \right)\\
-\alpha_L = \frac{1}{T'}\left( 1-\frac{Q_S}{\rho_a L_v C_D^* \Vmag{U} (q_o-q_a)} \right)
+\alpha_L = \frac{1}{T'}\left( 1-\frac{Q_L}{\rho_a L_v C_D^* \Vmag{U} (q_o-q_a)} \right)
 \end{align}
 
 \begin{figure}[h!]
@@ -182,7 +193,7 @@ q_a &= q_a(\overline{T_a}+T_a',\overline{T_d}+T_d',\overline{p_0}+p_0')
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_sshf_03.png}
 \end{subfigure}
-\caption{The mean SSHF from Equation \ref{Eq:Qs} and directly from the reanalysis data}
+\caption{The mean SSHF from Equation \ref{Eq:Qs} and directly from the reanalysis data (positive down)}
 \end{figure}
 
 \begin{figure}[h!]
@@ -204,7 +215,7 @@ q_a &= q_a(\overline{T_a}+T_a',\overline{T_d}+T_d',\overline{p_0}+p_0')
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_sshf_07.png}
 \end{subfigure}
-\caption{The mean SSHF from Equation \ref{Eq:Qs} and directly from the reanalysis data}
+\caption{The mean SSHF from Equation \ref{Eq:Qs} and directly from the reanalysis data  (positive down)}
 \end{figure}
 
 
@@ -216,19 +227,19 @@ q_a &= q_a(\overline{T_a}+T_a',\overline{T_d}+T_d',\overline{p_0}+p_0')
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_as_03.png}
 \end{subfigure}
-\caption{The mean $\alpha$ values (i.e. $\alpha$ is calculated every 6 hours then point-wise averaged in time). The color contours are limited to $\pm$5 since at some points the value of $\alpha$ contains "Inf" values. }
+\caption{The mean $\alpha$ values (i.e. $\alpha$ is calculated every 6 hours then point-wise averaged in time). The color contours are limited to $\pm$5 since at some points the value of $\alpha$ contains "Inf" values. (sensible heat flux was positive down, latent was positive up)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/alpha_smooth.png}
-\caption{using a cut-off and box-car smoothing the $\alpha$ fields.}
+\caption{using a cut-off and box-car smoothing the $\alpha$ fields. (sensible heat flux was positive down, latent was positive up)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/alpha_smooth_07.png}
-\caption{using a cut-off and box-car smoothing the $\alpha$ fields.}
+\caption{using a cut-off and box-car smoothing the $\alpha$ fields. (sensible heat flux was positive down, latent was positive up)}
 \end{figure}
 
 
@@ -240,7 +251,7 @@ q_a &= q_a(\overline{T_a}+T_a',\overline{T_d}+T_d',\overline{p_0}+p_0')
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_CDs_03.png}
 \end{subfigure}
-\caption{The drag coefficients using ERA5 SST' and smoothed $\alpha$ fields.}
+\caption{The drag coefficients using ERA5 SST' and smoothed $\alpha$ fields. (sensible heat flux was positive down, latent was positive up)}
 \end{figure}
 
 \subsection{Full Atmosphere, Smooth Ocean}
@@ -272,6 +283,7 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a) \label{Eq:QL}
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_Qs_so_03.png}
 \end{subfigure}
+\caption{(sensible heat flux was positive down, latent was positive up)}
 \end{figure}
 
 
@@ -305,6 +317,7 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_Qs_va_03.png}
 \end{subfigure}
+\caption{(the sign of the LHF may be wrong)}
 \end{figure}
 
 
@@ -316,6 +329,7 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{subfigure}[t]{0.49\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/era5_Qs_va_07.png}
 \end{subfigure}
+\caption{(the sign of the LHF may be wrong)}
 \end{figure}
 
 
@@ -390,7 +404,8 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{subfigure}[t]{\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/alpha_median_zonal_03.png}
 \end{subfigure}
-\caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features.}
+\caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features. (the sign of the LHF may be wrong)
+}
 \end{figure}
 
 \begin{figure}[h!]
@@ -401,7 +416,7 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{subfigure}[t]{\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/alpha_median_zonal_07.png}
 \end{subfigure}
-\caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features.}
+\caption{The median of $\alpha$'s in time per spatial location using the full ERA5 fluxes for the 2003 winter which had low variability in the Kuroshio. The boxcar clearly better preserves the smaller scale features. (the sign of the LHF may be wrong)}
 \end{figure}
 
 \section{Using a constant $\alpha$ might introduce too much error}
@@ -414,7 +429,7 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{subfigure}[t]{\textwidth}
 \includegraphics[width=\textwidth]{imgs_channel/alpha_const_error_box_07.png}
 \end{subfigure}
-\caption{Each quantity -the flux from ERA5 (left), the flux calculation with constant $\alpha$ and spatially and temporally varying ERA5 fields of SST and air properties (middle), and the difference between these two flux calculations (right) - is calculated at each 6hour point then the median of these is displayed here. The constant $\alpha$ is chosen by taking the median of all calculated $\alpha$'s.}
+\caption{Each quantity -the flux from ERA5 (left), the flux calculation with constant $\alpha$ and spatially and temporally varying ERA5 fields of SST and air properties (middle), and the difference between these two flux calculations (right) - is calculated at each 6hour point then the median of these is displayed here. The constant $\alpha$ is chosen by taking the median of all calculated $\alpha$'s. (the sign of the LHF may be wrong)}
 \end{figure}
 
 \section{Using a linear $\alpha$ also likely has way too much error}
@@ -422,25 +437,25 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/alpha_linear_noW.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/W_Gaus.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/alpha_linear_Gaus.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/alpha_linear_SST.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 
@@ -449,20 +464,71 @@ Q_L = \rho_a L_v  C_D^* \Vmag{U} (q_o^*-q_a)
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/var_vs_flux.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/var_vs_flux_SST_prime.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{imgs_channel/var_vs_flux_SST_prime_med.png}
-\caption{There appears to be some correlation}
+\caption{There appears to be some correlation (the sign of the LHF may be wrong)}
 \end{figure}
+
+\section{Considering the flux to be a composite of sensible and latent}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_mean_sshf_slhf_DJFM_03.png}
+\end{subfigure}
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_mean_sshf_slhf_DJFM_04.png}
+\end{subfigure}
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_mean_sshf_slhf_DJFM_05.png}
+\end{subfigure}
+\caption{Both SSHF and SLHF are positive up.}
+\end{figure}
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_mean_sshf_slhf_DJFM_06.png}
+\end{subfigure}
+\begin{subfigure}[t]{\textwidth}
+\includegraphics[width=\textwidth]{imgs_channel/era5_mean_sshf_slhf_DJFM_07.png}
+\end{subfigure}
+\caption{Both SSHF and SLHF are positive up.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/era5_total_SmLg_03_minus_07.png}
+\end{figure}
+
+\section{Box filter channel}
+ RH = 95\%, DT = 6K, $\alpha$ = 1, $|U| \leq$ 6 m/s
+ 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\textwidth]{imgs_channel/SST_prime_box.png}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{imgs_channel/channel_eddy_minus_ctrl.png}
+\end{figure}
+
+
+
+
+
+
+
 
 \appendix
 \section{Proving the curl/divergence and cross-wind/down-wind gradient relationships}

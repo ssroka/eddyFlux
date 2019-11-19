@@ -1,0 +1,58 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multicol}
+
+% figures
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage[section]{placeins} % keeps floats inside this sections
+
+% document propoerties format
+\usepackage[margin=0.75in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{indentfirst}
+
+% new commands
+\newcommand{\Vmag}[1]{\| \mathbf{#1}\|}
+% newcommands for this document
+\newcommand{\dudx}{\frac{\partial u}{\partial x}}
+\newcommand{\dudy}{\frac{\partial u}{\partial y}}
+\newcommand{\dvdx}{\frac{\partial v}{\partial x}}
+\newcommand{\dvdy}{\frac{\partial v}{\partial y}}
+
+\newcommand{\dTdx}{\frac{\partial T}{\partial x}}
+\newcommand{\dTdy}{\frac{\partial T}{\partial y}}
+
+\newcommand{\dTpdx}{\frac{\partial T'}{\partial x}}
+\newcommand{\dTpdy}{\frac{\partial T'}{\partial y}}
+
+% bibliography
+\usepackage[round]{natbib}
+
+\begin{document}
+
+
+
+
+
+\begin{align}
+Q_s &= \rho_a c_p C_D^*(1+\alpha T_o') \Vmag{U} (T_o-T_a)\\
+Q_L &= \rho_a L_v C_D^*(1+\alpha T_o') \Vmag{U} (q_o^*-q_a)
+\end{align}
+
+and the total flux is 
+\begin{align}
+F = Q_s + Q_L
+\end{align}
+
+
+At large scales, $T_a^{LP} \propto T_o^{LP}$ such that the low-pass-filtered fields
+
+
+
+
+\end{document}

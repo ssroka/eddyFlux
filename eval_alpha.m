@@ -72,8 +72,6 @@ for year = 2
             aL_beta = [ones(numel(aL_NaN),1) SST_NaN]\aL_NaN; 
             aL_est =@(SST_prime)  aL_beta(1) + aL_beta(2)*SST_prime;
             
-            
-            
     end
     
     sshf_as_constant = zeros(sum(patch_lon),sum(patch_lat),length(time));

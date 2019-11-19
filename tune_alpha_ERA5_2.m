@@ -19,7 +19,7 @@ CD_ref = 1e-3;   % reference drag coefficient
 
 lsm = ncread(land_src,'lsm');
 
-for year = 4:7
+for year = 3:7
     close all
     clearvars -except year CD_ref L Lv c_p_air filter_flag flag_load_new_vars land_src lsm patch_str rho_a
     switch year
@@ -112,6 +112,12 @@ for year = 4:7
                 
                 SST_patch_CTRL = smooth2a(SST_patch(:,:,tt),Ny, Nx);
                 SST_patch_CTRL(lsm_patch>0) = NaN;
+                
+                sshf_patch_CTRL =  smooth2a(sshf_patch(:,:,tt),Ny, Nx);
+                sshf_patch_CTRL(lsm_patch>0) = NaN;
+                
+                slhf_patch_CTRL =  smooth2a(slhf_patch(:,:,tt),Ny, Nx);
+                slhf_patch_CTRL(lsm_patch>0) = NaN;
             case 'zonal'
                 [X,Y]  = create_grid(lon(patch_lon),lat(patch_lat));
                 X_dist = abs(X(end,end))-(X(end,1));
@@ -121,6 +127,12 @@ for year = 4:7
                 
                 SST_patch_CTRL =  repmat(nanmean(SST_patch(:,:,tt)),sum(patch_lon),1); %
                 SST_patch_CTRL(lsm_patch>0) = NaN;
+                
+                sshf_patch_CTRL =  repmat(nanmean(sshf_patch(:,:,tt)),sum(patch_lon),1); %
+                sshf_patch_CTRL(lsm_patch>0) = NaN;
+                
+                slhf_patch_CTRL =  repmat(nanmean(slhf_patch(:,:,tt)),sum(patch_lon),1); %
+                s1hf_patch_CTRL(lsm_patch>0) = NaN;
         end
         
         SST_prime(:,:,tt) = SST_patch(:,:,tt) - SST_patch_CTRL;

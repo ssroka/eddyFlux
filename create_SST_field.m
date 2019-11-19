@@ -1,7 +1,7 @@
-function [SST_field,SST_CTRL] = create_SST_field(ctrl_flag, SST_bar,D_SST,y_sst_km,l_sst_km,l_an_km,L_km,eddy_size,X,Y,n_eddies,rand_seed)
-SST_CTRL = SST_bar-D_SST/2*tanh((Y-y_sst_km)/l_sst_km);
+function [SST_field,SST_CTRL] = create_SST_field(ctrl_flag, SST_bar,D_SST,y_sst_km,l_sst_km,l_an_km,L_km,eddy_size,X,Y,n_eddies,rand_seed,filter_flag,L)
+SST_CTRL_0 = SST_bar-D_SST/2*tanh((Y-y_sst_km)/l_sst_km);
 if exist('rand_seed','var')
-rng(rand_seed)
+    rng(rand_seed)
 end
 if ~ctrl_flag
     SST_eddies_T = zeros(size(X));
@@ -17,13 +17,22 @@ if ~ctrl_flag
     a = fzero(@(a) std(reshape(SST_eddies_T,numel(SST_eddies_T),1)*a)-3,4);
     SST_eddies_T = SST_eddies_T*a;
     G = exp(-(Y-y_sst_km).^2./l_an_km.^2);
-    SST_field = SST_CTRL + SST_eddies_T.*G;
+    SST_field = SST_CTRL_0 + SST_eddies_T.*G;
 else
-    SST_field = SST_CTRL;
+    SST_field = SST_CTRL_0;
 end
 
-
-
+if strcmp('box',filter_flag)
+    X_dist = abs(X(end,end))-(X(end,1));
+    Y_dist = abs(Y(1,1)-Y(end,1));
+    
+    Nx     = floor(X_dist/L);
+    Ny     = floor(Y_dist/L);
+    
+    SST_CTRL = smooth2a(SST_field,Ny, Nx);
+else
+    SST_CTRL = SST_CTRL_0;
+end
 
 
 
