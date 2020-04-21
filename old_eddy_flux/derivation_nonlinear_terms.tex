@@ -1,0 +1,76 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multicol}
+
+% figures
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage[section]{placeins} % keeps floats inside this sections
+
+% document propoerties format
+\usepackage[margin=0.75in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{indentfirst}
+
+% equations
+\usepackage{cancel} % use \cancelto{0}{x} to draw an arrow thru x with a zero
+
+% new commands
+\newcommand{\Vmag}[1]{\| \mathbf{#1}\|}
+% newcommands for this document
+\newcommand{\Ub}{U\hspace*{1mm}}
+\newcommand{\Up}{U'}
+\newcommand{\To}{T_o\hspace*{1mm}}
+\newcommand{\Top}{T_o'}
+\newcommand{\Ta}{T_a\hspace*{1mm}}
+\newcommand{\Tap}{T_a'}
+\newcommand{\CDs}{C_D^s}
+\newcommand{\CDL}{C_D^L}
+\newcommand{\cpa}{c_p^{air}}
+
+% bibliography
+\usepackage[round]{natbib}
+
+\begin{document}
+
+
+\begin{align}
+Q_s &= \rho_a c_p C_D^*(1+\alpha_s T_o') \Vmag{U} (T_o-T_a)\\
+Q_L &= \rho_a L_v C_D^*(1+\alpha_L T_o') \Vmag{U} (q_o^*-q_a)
+\end{align}
+
+and the total flux is 
+\begin{align}
+F = Q_s + Q_L
+\end{align}
+
+
+%At large scales, $T_a^{LP} \propto T_o^{LP}$ where LP indicates a low-pass-filtered field.
+
+\section*{sensible}
+\begin{align*}
+Q_s = &\CDs(1+\alpha_s \Top) (\Ub+\Up) (\To + \Top -\Ta - \Tap)\\
+Q_s \propto & \CDs \Ub (\To -\Ta )+\CDs (\Top -\Tap )\Ub -\CDs \Ta \Up -\CDs \Tap \Up +\CDs \To \Up +...\\
+&\CDs\Top\Up+\CDs\Top^2\Ub\alpha_s+\CDs\Top^2\Up\alpha_s-\CDs\Ta\Top\Ub\alpha_s-\CDs\Tap\Top\Ub\alpha_s+...\\
+&\CDs\To\Top\Ub\alpha_s-\CDs\Ta\Top\Up\alpha_s-\CDs\Tap\Top\Up\alpha_s+\CDs\To\Top\Up\alpha_s\\
+Q_s \propto &\CDs\To-\Ub-\CDs\Tap\Ub-\CDs\Ta\Ub+\CDs\Top\Ub-\CDs\Ta\Up-\CDs\Tap\Up+\CDs\To\Up+...\\
+&\CDs\Top\Up+\CDs\Top^2\Ub\alpha_s+\CDs\Top^2\Up\alpha_s-\CDs\Ta\Top\Ub\alpha_s-\CDs\Tap\Top\Ub\alpha_s+...\\
+&\CDs\To\Top\Ub\alpha_s-\CDs\Ta\Top\Up\alpha_s-\CDs\Tap\Top\Up\alpha_s+\CDs\To\Top\Up\alpha_s\\
+\end{align*}
+
+\begin{align*}
+%\overline{Q_s} \propto &\CDs\To\Ub-\cancelto{0}{\CDs\Tap\Ub}-\CDs\Ta\Ub+\cancelto{0}{\CDs\Top\Ub}-\cancelto{0}{\CDs\Ta\Up}-\CDs\overline{\Tap\Up}+\cancelto{0}{\CDs\To\Up}+...\\
+%&\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s-\cancelto{0}{\CDs\Ta\Top\Ub\alpha_s}-\CDs\overline{\Tap\Top}\Ub\alpha_s+...\\
+%&\cancelto{0}{\CDs\To\Top\Ub\alpha_s}-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
+%\overline{Q_s} \propto &\CDs\To\Ub-\CDs\Ta\Ub-\CDs\overline{\Tap\Up}+\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s+...\\
+%&-\CDs\overline{\Tap\Top}\Ub\alpha_s-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
+\end{align*}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+
+
+
+\end{document}

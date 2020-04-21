@@ -1,6 +1,6 @@
 clear;clc;close all
 
-year_vec = 2003;
+year_vec = 2007;
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
