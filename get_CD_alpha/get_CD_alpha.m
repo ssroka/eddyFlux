@@ -18,7 +18,7 @@ L = 500000; % m
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
-year_vec = 2003:2007;
+year_vec = 2003;
 
 % 2003
 aCd0(:,1) = [  0.0136; -0.0447; 0.0014; 0.0023];

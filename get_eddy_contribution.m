@@ -1,10 +1,16 @@
 clear;clc;close all
 
-year_vec = 2007;
+year_vec = 2003;
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
+addpath('/Users/ssroka/MIT/Research/eddyFlux/filter')
+addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
+addpath('/Users/ssroka/Documents/MATLAB/util/')
+
 L = 500000; % m
+
+intvl = 1; % look at every intvl'th timpepoint
 
 %% filter set up
 
@@ -29,7 +35,8 @@ NaN_inds = isnan(files_for_size.SST_patch(:,:,1));
 
 [M] = boxcar_filter_mat(m,n,Ny,Nx,NaN_inds);
 
-load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
+% this is the same for every year
+load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon');
 
 err_box_lat = [32 38];
@@ -50,11 +57,9 @@ for i = 1:length(year_vec)
     
     SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
     
-    
-    
     % coefficients
-    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_alpha_CD_%d_to_%d',year_vec(1),year_vec(end)),'X');
-    alpha_CD = X{i};
+    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_alpha_CD_%d_to_%d',2003,2007),'X');
+    alpha_CD = X{year - 2002};
     
     as = alpha_CD(1);
     aL = alpha_CD(2);
@@ -62,16 +67,19 @@ for i = 1:length(year_vec)
     CD_s = alpha_CD(3);
     CD_L = alpha_CD(4);
     
+    p_short = length(1:intvl:p);
     
-    p_short = length(1:5:p);
     model_full_sshf = zeros(m,n,p_short);
     model_full_slhf = zeros(m,n,p_short);
     model_no_eddy_sshf = zeros(m,n,p_short);
     model_no_eddy_slhf = zeros(m,n,p_short);
+    era_no_eddy_sshf = zeros(m,n,p_short);
+    era_no_eddy_slhf = zeros(m,n,p_short);
     
     count = 1;
-    
-    for tt = 1:5:length(time)
+    fprintf('\n')
+    for tt = 1:intvl:p % time points
+        fprintf(' processing snapshot %d of %d\n',tt,p)
         
         [SST_patch_CTRL,SST_prime] = boxcar_filter(SST_patch(:,:,tt),M);
         [P0_patch_CTRL,~] = boxcar_filter(P0_patch(:,:,tt),M);
@@ -87,19 +95,22 @@ for i = 1:length(year_vec)
         model_full_sshf(:,:,count) = rho_a.*c_p_air.*CD_s.*(1+as.*SST_prime).*U_mag(:,:,tt).*(DT_patch);
         model_full_slhf(:,:,count) = rho_a.*Lv.*CD_L.*(1+aL.*SST_prime).*U_mag(:,:,tt).*(qo_patch(:,:,tt)-qa_patch(:,:,tt));
         
+        era_no_eddy_sshf(:,:,count) = boxcar_filter(sshf_patch(:,:,tt),M);
+        era_no_eddy_slhf(:,:,count) = boxcar_filter(slhf_patch(:,:,tt),M);
+        
         model_no_eddy_sshf(:,:,count) = rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*(DT_patch_CTRL);
         model_no_eddy_slhf(:,:,count) = rho_a.*Lv.*CD_L.*U_mag_CTRL.*(q_diff_CTRL);
+        
         count = count + 1;
     end
     
+    save(sprintf('model_n_ERA_data_%d',year),...
+        'model_full_sshf','model_full_slhf','model_no_eddy_sshf','model_no_eddy_slhf',...
+        'era_no_eddy_sshf','era_no_eddy_slhf')
+    
 end
 
-t_range = p_short;
 
-model_sshf = nanmean(model_full_sshf(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
-model_slhf = nanmean(model_full_slhf(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
+plot_eddy_vs_ERA;
 
-model_sshf_no_eddy = nanmean(model_no_eddy_sshf(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
-model_slhf_no_eddy = nanmean(model_no_eddy_slhf(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
-
-get_eddy_contribution_plot
+% get_eddy_contribution_plot;

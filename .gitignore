@@ -3,6 +3,7 @@
 *.zip
 *.tar
 *.gz
+*.nc
 
 # images
 *.jpg

@@ -12,8 +12,8 @@ err_box_lon = [130 160];
 error_units_flag = 'flux'; % 'flux' or 'power'
 
 patch_str = 'Kur'; % 'GS'   'Kur'
-land_src = '/Volumes/SydneySroka_Anton/ERA5_2018_Dec_1_0_LandSeaMask.nc';
-lsm = ncread(land_src,'lsm');
+% land_src = '/Volumes/SydneySroka_Anton/ERA5_2018_Dec_1_0_LandSeaMask.nc';
+% lsm = ncread(land_src,'lsm');
 
 alpha_eq_flag = 'constant_imposed'; % 'constant' (calculated from mean of flux (LS with constant valued model)
 % 'linear'   (calculated from mean of flux (LS with model linear in T')
@@ -81,7 +81,7 @@ contourf(lon(patch_lon),lat(patch_lat),SSH_a(patch_lon,patch_lat,i)',[10],'k')
 
 %}
 
-for year = [3 7]
+for year = [4]
     
     switch year
         case 3 % 2003
