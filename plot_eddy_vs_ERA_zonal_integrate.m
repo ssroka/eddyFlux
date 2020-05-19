@@ -13,6 +13,7 @@ add_ssh_flag = true;
 load(sprintf('model_n_ERA_data_%d',year))
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year));
 
+
 if plt_error_box
     
     err_box_lat = [32 38];
@@ -57,75 +58,28 @@ else
     
 end
 
-
-% model_sshf = nanmean(sshf_model(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
-% model_slhf = nanmean(slhf_model(err_box_bnds_lon,err_box_bnds_lat,t_range),3)';
 %%
-ax = subplot(3,4,1);
-[~,h] = contourf(lon_er,lat_er,ERA5_sshf);
-title(sprintf('ERA5 full SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,2);
-[~,h] = contourf(lon_er,lat_er,ERA5_slhf);
-title(sprintf('ERA5 full SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,3);
-[~,h] = contourf(lon_er,lat_er,model_sshf);
-title(sprintf('model full SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,4);
-[~,h] = contourf(lon_er,lat_er,model_slhf);
-title(sprintf('model full SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,5);
-[~,h] = contourf(lon_er,lat_er,ERA5_sshf_CTRL);
-title(sprintf('ERA5 no eddy SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,6);
-[~,h] = contourf(lon_er,lat_er,ERA5_slhf_CTRL);
-title(sprintf('ERA5 no eddy SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,7);
-[~,h] = contourf(lon_er,lat_er,model_sshf_no_eddy);
-title(sprintf('no eddy SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,8);
-[~,h] = contourf(lon_er,lat_er,model_slhf_no_eddy);
-title(sprintf('no eddy SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-format_fig(h,ax)
-
-ax = subplot(3,4,9);
-[~,h] = contourf(lon_er,lat_er,ERA5_sshf - ERA5_sshf_CTRL);
+ax = subplot(2,2,1);
+[h] = contourf(lon_er,lat_er,ERA5_sshf - ERA5_sshf_CTRL);
 max_diff = max(ERA5_sshf(:) - ERA5_sshf_CTRL(:));
 min_diff = min(ERA5_sshf(:) - ERA5_sshf_CTRL(:));
 title(sprintf('ERA5 diff SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
 format_fig(h,ax,max_diff,min_diff)
 
-ax = subplot(3,4,10);
-[~,h] = contourf(lon_er,lat_er,ERA5_slhf - ERA5_slhf_CTRL);
-max_diff = max(ERA5_slhf(:) - ERA5_slhf_CTRL(:));
-min_diff = min(ERA5_slhf(:) - ERA5_slhf_CTRL(:));
+ax = subplot(2,2,3);
+[h] = plot(nanmean(ERA5_slhf - ERA5_slhf_CTRL,2),lat_er,'linewidth',2);
 title(sprintf('ERA5 diff SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
 format_fig(h,ax,max_diff,min_diff)
 
-ax = subplot(3,4,11);
-[~,h] = contourf(lon_er,lat_er,model_sshf-model_sshf_no_eddy);
+ax = subplot(2,2,2);
+[h] = contourf(lon_er,lat_er,model_sshf-model_sshf_no_eddy);
 max_diff = max(model_sshf(:) - model_sshf_no_eddy(:));
 min_diff = min(model_sshf(:) - model_sshf_no_eddy(:));
 title(sprintf('model diff SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
 format_fig(h,ax,max_diff,min_diff)
 
-ax = subplot(3,4,12);
-[~,h] = contourf(lon_er,lat_er,model_slhf - model_slhf_no_eddy);
-max_diff = max(model_slhf(:) - model_slhf_no_eddy(:));
-min_diff = min(model_slhf(:) - model_slhf_no_eddy(:));
+ax = subplot(2,2,4);
+[h] = plot(nanmean(model_slhf - model_slhf_no_eddy,2),lat_er,'linewidth',2);
 title(sprintf('model diff SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
 format_fig(h,ax,max_diff,min_diff)
 
@@ -133,8 +87,8 @@ set(gcf,'color','w','position',[ 232  1  1188  801],'NumberTitle','off','Name',n
 
 if add_ssh_flag
     
-    for i = 1:12
-        subplot(3,4,i)
+    for i = [1 2]
+        subplot(2,2,i)
         hold on
         plot_SSH_contour;
     end
@@ -144,19 +98,17 @@ end
 update_figure_paper_size()
 
 if add_ssh_flag
-    print(sprintf('imgs/cmp_model_ERA5_ssh_%d',year),'-dpdf')
+    print(sprintf('imgs/model_zonal_integral_ssh_%d',year),'-dpdf')
 else
-    print(sprintf('imgs/cmp_model_ERA5_%d',year),'-dpdf')
+    print(sprintf('imgs/model_zonal_integral_%d',year),'-dpdf')
 end
-
 
 function [] = format_fig(h,plt_num,max_val,min_val)
 
-set(h,'edgecolor','none')
 set(gca,'ydir','normal','fontsize',15)
 colorbar
-xlabel('deg')
 ylabel('deg')
+xlabel('zonal mean')
 
 if nargin>2 % red white and blue colormap
     colormap(plt_num,rwb_map([max_val 0 min_val],100))
@@ -166,26 +118,3 @@ end
 
 
 end
-
-
-
-%{
-
-
-
-
-
-
-%}
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 clear;clc;close all
 
-year_vec = 2003;
+year_vec = 2007;
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
@@ -69,20 +69,18 @@ for i = 1:length(year_vec)
     
     p_short = length(1:intvl:p);
     
-    ZEROS = zeros(m,n,p_short);
+    ZEROS = zeros(m,n,p_short,2);
     
-    model_full_sshf = ZEROS;
-    model_full_slhf = ZEROS;
-    model_no_eddy_sshf = ZEROS;
-    model_no_eddy_slhf = ZEROS;
-    era_no_eddy_sshf = ZEROS;
-    era_no_eddy_slhf = ZEROS;
+    
     term1 = ZEROS;
     term2 = ZEROS;
     term3 = ZEROS;
-    term1_CTRL = ZEROS;
-    term2_CTRL = ZEROS;
-    term3_CTRL = ZEROS;
+    term4 = ZEROS;
+    term5 = ZEROS;
+    term6 = ZEROS;
+    term7 = ZEROS;
+    term8 = ZEROS;
+
     
     count = 1;
     fprintf('\n')
@@ -91,34 +89,47 @@ for i = 1:length(year_vec)
         
         [SST_patch_CTRL,SST_prime] = boxcar_filter(SST_patch(:,:,tt),M);
         [P0_patch_CTRL,~] = boxcar_filter(P0_patch(:,:,tt),M);
-        [q_diff_CTRL,~] = boxcar_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),M);
         
+        [q_diff_CTRL,~] = boxcar_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),M);
+        q_diff_prime = (qo_patch(:,:,tt)-qa_patch(:,:,tt)) - q_diff_CTRL;
+
         DT_patch = SST_patch(:,:,tt) - t2m_patch(:,:,tt);
         [DT_patch_CTRL,~] = boxcar_filter(DT_patch,M);
+        DT_diff_prime = (DT_patch) - DT_patch_CTRL;
+
         
         [U_mag_CTRL,~] = boxcar_filter(U_mag(:,:,tt),M);
+        U_mag_prime = U_mag(:,:,tt) - U_mag_CTRL;
         
-%         qo_patch_CTRL = SAM_qsatWater(SST_patch_CTRL, P0_patch(:,:,tt)) ;
         
-        model_full_sshf(:,:,count) = rho_a.*c_p_air.*CD_s.*(1+as.*SST_prime).*U_mag(:,:,tt).*(DT_patch);
-        model_full_slhf(:,:,count) = rho_a.*Lv.*CD_L.*(1+aL.*SST_prime).*U_mag(:,:,tt).*(qo_patch(:,:,tt)-qa_patch(:,:,tt));
+        term1(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*DT_patch_CTRL;
         
-        era_no_eddy_sshf(:,:,count) = boxcar_filter(sshf_patch(:,:,tt),M);
-        era_no_eddy_slhf(:,:,count) = boxcar_filter(slhf_patch(:,:,tt),M);
+        term2(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*as.*DT_patch_CTRL.*SST_prime.*U_mag_prime;
+        term3(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*as.*SST_prime.*U_mag_CTRL.*DT_diff_prime;
+        term4(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_prime.*DT_diff_prime;
+        term5(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*as.*SST_prime.*U_mag_prime.*DT_diff_prime;
         
-        model_no_eddy_sshf(:,:,count) = rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*(DT_patch_CTRL);
-        model_no_eddy_slhf(:,:,count) = rho_a.*Lv.*CD_L.*U_mag_CTRL.*(q_diff_CTRL);
+        term6(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*as.*SST_prime.*U_mag_CTRL.*DT_patch_CTRL;
+        term7(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_prime.*DT_patch_CTRL;
+        term8(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*DT_diff_prime;
+                
+        term1(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_CTRL.*q_diff_CTRL;
         
+        term2(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*q_diff_CTRL.*SST_prime.*U_mag_prime;
+        term3(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_prime;
+        term4(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_prime.*q_diff_prime;
+        term5(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_prime.*q_diff_prime;
+        
+        term6(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_CTRL;
+        term7(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_prime.*q_diff_CTRL;
+        term8(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_CTRL.*q_diff_prime;
+                
         count = count + 1;
     end
-    
-    save(sprintf('model_n_ERA_data_%d',year),...
-        'model_full_sshf','model_full_slhf','model_no_eddy_sshf','model_no_eddy_slhf',...
-        'era_no_eddy_sshf','era_no_eddy_slhf')
+    save(sprintf('flux_terms_%d',year),...
+        'term1','term2','term3','term4','term5','term6','term7','term8')
     
 end
 
-
-plot_eddy_vs_ERA;
-
+;
 % get_eddy_contribution_plot;

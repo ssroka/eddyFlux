@@ -2,13 +2,10 @@
 % close all
 %{
 
-
 filename_data = sprintf('data_%s_%d_lat_%d_%d_lon_%d_%d.mat',filter_flag,year,lat_bnds(1),lat_bnds(2),lon_bnds(1),lon_bnds(2));
 load(filename_data,'DT_patch')
 
-
 %}
-
 
 figure(year)
 if ~(exist('err_box_bnds_lat','var'))

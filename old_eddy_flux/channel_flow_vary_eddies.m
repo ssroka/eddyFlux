@@ -470,7 +470,7 @@ for i_param = 1
   
                 
                 figure
-                plot(mean(Q_s(:,:,1)-Q_s(:,:,2),2),x,10,'linewidth',2)
+                plot(mean(Q_s(:,:,1)-Q_s(:,:,2),2),x,'linewidth',2)
 
                 
                 
