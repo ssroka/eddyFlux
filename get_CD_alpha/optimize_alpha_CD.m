@@ -1,12 +1,11 @@
-function [mean_er] = optimize_alpha_CD(alpha_CD,year,err_box_bnds_lat,err_box_bnds_lon)
+function [mean_er] = optimize_alpha_CD(alpha_CD,year,err_box_bnds_lat,err_box_bnds_lon,L)
 
 %{
 
 
 %}
 
-
-filename = sprintf('Qs_QL_optimization_data_%d',year);
+filename = sprintf('Qs_QL_optimization_data_L_%d_%d',L/1000,year);
 load(filename,'as_multiplier','aL_multiplier','SST_prime','sshf_patch','slhf_patch')
 
 as = alpha_CD(1);

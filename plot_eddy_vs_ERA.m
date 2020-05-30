@@ -6,11 +6,20 @@ year = 2007;
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
-add_ssh_flag = true;
+add_ssh_flag = false;
+
+ L = 500000 ; % m
+
+alpha_pos_flag = true;
 
 %% begin
+if alpha_pos_flag
+    con_str = 'cons_';
+else
+    con_str = '';
+end
 
-load(sprintf('model_n_ERA_data_%d',year))
+load(sprintf('model_n_ERA_data_L_%d_%s%d',L/1000,con_str,year))
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year));
 
 if plt_error_box
@@ -144,10 +153,11 @@ end
 update_figure_paper_size()
 
 if add_ssh_flag
-    print(sprintf('imgs/cmp_model_ERA5_ssh_%d',year),'-dpdf')
+    print(sprintf('imgs/cmp_model_ERA5_L_%d_%sssh_%d',L/1000,con_str,year),'-dpdf')
 else
-    print(sprintf('imgs/cmp_model_ERA5_%d',year),'-dpdf')
+    print(sprintf('imgs/cmp_model_ERA5_L_%d_%s%d',L/1000,con_str,year),'-dpdf')
 end
+
 
 
 function [] = format_fig(h,plt_num,max_val,min_val)

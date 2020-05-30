@@ -1,7 +1,7 @@
 
 % SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/CCAR_SSH_data/SSH_20000103_20090627_CCAR.mat','lon','lat','time','SSH');
 if ~exist('SSH_data','var')
-SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/global-reanalysis-phy-001-030-daily.mat','lon','lat','time','SSH');
+SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/ssh_data_global/global-reanalysis-phy-001-030-daily.mat','lon','lat','time','SSH');
 end
 
 patch_lat_bnds = [min(lat(patch_lat)) max(lat(patch_lat))];

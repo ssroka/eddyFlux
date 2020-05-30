@@ -28,6 +28,10 @@
 \newcommand{\Top}{T_o'}
 \newcommand{\Ta}{T_a\hspace*{1mm}}
 \newcommand{\Tap}{T_a'}
+\newcommand{\qo}{q_o\hspace*{1mm}}
+\newcommand{\qop}{q_o'}
+\newcommand{\qa}{q_a\hspace*{1mm}}
+\newcommand{\qap}{q_a'}
 \newcommand{\CDs}{C_D^s}
 \newcommand{\CDL}{C_D^L}
 \newcommand{\cpa}{c_p^{air}}
@@ -39,8 +43,8 @@
 
 
 \begin{align}
-Q_s &= \rho_a c_p C_D^*(1+\alpha_s T_o') \Vmag{U} (T_o-T_a)\\
-Q_L &= \rho_a L_v C_D^*(1+\alpha_L T_o') \Vmag{U} (q_o^*-q_a)
+Q_s &= \rho_a c_p C_D^*(1+\alpha_s T_o') \Vmag{U} (\To-\Ta)\\
+Q_L &= \rho_a L_v C_D^*(1+\alpha_L T_o') \Vmag{U} (\qo-\qa)
 \end{align}
 
 and the total flux is 
@@ -48,27 +52,76 @@ and the total flux is
 F = Q_s + Q_L
 \end{align}
 
-
 %At large scales, $T_a^{LP} \propto T_o^{LP}$ where LP indicates a low-pass-filtered field.
 
 \section*{sensible}
+\vspace*{-1cm}
 \begin{align*}
-Q_s = &\CDs(1+\alpha_s \Top) (\Ub+\Up) (\To + \Top -\Ta - \Tap)\\
-Q_s \propto & \CDs \Ub (\To -\Ta )+\CDs (\Top -\Tap )\Ub -\CDs \Ta \Up -\CDs \Tap \Up +\CDs \To \Up +...\\
-&\CDs\Top\Up+\CDs\Top^2\Ub\alpha_s+\CDs\Top^2\Up\alpha_s-\CDs\Ta\Top\Ub\alpha_s-\CDs\Tap\Top\Ub\alpha_s+...\\
-&\CDs\To\Top\Ub\alpha_s-\CDs\Ta\Top\Up\alpha_s-\CDs\Tap\Top\Up\alpha_s+\CDs\To\Top\Up\alpha_s\\
-Q_s \propto &\CDs\To-\Ub-\CDs\Tap\Ub-\CDs\Ta\Ub+\CDs\Top\Ub-\CDs\Ta\Up-\CDs\Tap\Up+\CDs\To\Up+...\\
-&\CDs\Top\Up+\CDs\Top^2\Ub\alpha_s+\CDs\Top^2\Up\alpha_s-\CDs\Ta\Top\Ub\alpha_s-\CDs\Tap\Top\Ub\alpha_s+...\\
-&\CDs\To\Top\Ub\alpha_s-\CDs\Ta\Top\Up\alpha_s-\CDs\Tap\Top\Up\alpha_s+\CDs\To\Top\Up\alpha_s\\
+Q_s = &\rho_a c_p \CDs(1+\alpha_s \Top) (\Ub+\Up) (\To + \Top -\Ta - \Tap)\\
+\Delta T = &\To - \Ta \qquad \Delta T' = \Top - \Tap \\
+Q_s = &\rho_a c_p \CDs(1+\alpha_s \Top) (\Ub+\Up) (\Delta T + \Delta T')\\
+Q_s = &\rho_a c_p \CDs(\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up) (\Delta T + \Delta T')\\
+Q_s = &\rho_a c_p \CDs\Delta T (\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up) +...\\ 
+&\rho_a c_p \CDs\Delta T'(\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up)\\
 \end{align*}
 
+\section*{latent}
+\vspace*{-1cm}
 \begin{align*}
-%\overline{Q_s} \propto &\CDs\To\Ub-\cancelto{0}{\CDs\Tap\Ub}-\CDs\Ta\Ub+\cancelto{0}{\CDs\Top\Ub}-\cancelto{0}{\CDs\Ta\Up}-\CDs\overline{\Tap\Up}+\cancelto{0}{\CDs\To\Up}+...\\
-%&\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s-\cancelto{0}{\CDs\Ta\Top\Ub\alpha_s}-\CDs\overline{\Tap\Top}\Ub\alpha_s+...\\
-%&\cancelto{0}{\CDs\To\Top\Ub\alpha_s}-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
-%\overline{Q_s} \propto &\CDs\To\Ub-\CDs\Ta\Ub-\CDs\overline{\Tap\Up}+\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s+...\\
-%&-\CDs\overline{\Tap\Top}\Ub\alpha_s-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
+Q_L = &\rho_a L_v \CDL(1+\alpha_s \Top) (\Ub+\Up) (\qo + \qop -\qa - \qap)\\
+\Delta q = &\qo - \qa \qquad \Delta q' = \qop - \qap \\
+Q_L = &\rho_a L_v \CDL(1+\alpha_s \Top) (\Ub+\Up) (\Delta q + \Delta q')\\
+Q_L = &\rho_a L_v \CDL(\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up) (\Delta q + \Delta q')\\
+Q_L = &\rho_a L_v \CDL\Delta q (\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up) +...\\ 
+&\rho_a L_v \CDL\Delta q'(\Ub+\Up+\alpha_s \Top\Ub+\alpha_s \Top\Up)\\
 \end{align*}
+
+\vspace*{-1cm}
+
+\subsection*{no eddy terms}
+\vspace*{-1cm}
+\begin{table}[!h]
+\centering
+\begin{tabular}{ll}
+$\rho_a c_p \CDs\Delta T\Ub$ & $\rho_a L_v \CDL\Delta q\Ub$
+\end{tabular}
+\end{table}
+
+\vspace*{-1cm}
+
+\subsection*{eddy terms}
+\vspace*{-1cm}
+\begin{table}[!h]
+\centering
+\begin{tabular}{ll}
+$\rho_a c_p \CDs\Delta T \alpha_s \Top\Up$ & $\rho_a L_v \CDL\Delta q \alpha_L \qop\Up$\\ 
+$\rho_a c_p \CDs\Delta T' \alpha_s \Top\Up$ & $\rho_a L_v \CDs\Ub\Delta q' \alpha_s \qop\Up$\\
+$\rho_a c_p \CDs\Up\Delta T'$ & $\rho_a L_v \CDL\Up\Delta q'$ \\
+$\rho_a c_p \CDs\Delta T' \alpha_s \Top\Up$ & $\rho_a L_v \CDL\Delta q' \alpha_L \qop\Up$
+\end{tabular}
+\end{table}
+
+\vspace*{-1cm}
+
+\subsection*{terms that are linear in primes}
+\vspace*{-0.5cm}
+\begin{table}[!h]
+\centering
+\begin{tabular}{ll}
+$\rho_a c_p \CDs\Delta T\Ub \alpha_s \Top$ & $\rho_a L_v \CDL\Delta q\Ub \alpha_L \qop$\\ 
+$\rho_a c_p \CDs\Delta T\Up $ & $\rho_a L_v \CDL\Delta q\Up $\\
+$\rho_a c_p \CDs\Delta T' \Ub$ & $\rho_a L_v \CDL\Delta q' \Ub$ 
+\end{tabular}
+\end{table}
+
+
+%\begin{align*}
+%%\overline{Q_s} \propto &\CDs\To\Ub-\cancelto{0}{\CDs\Tap\Ub}-\CDs\Ta\Ub+\cancelto{0}{\CDs\Top\Ub}-\cancelto{0}{\CDs\Ta\Up}-\CDs\overline{\Tap\Up}+\cancelto{0}{\CDs\To\Up}+...\\
+%%&\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s-\cancelto{0}{\CDs\Ta\Top\Ub\alpha_s}-\CDs\overline{\Tap\Top}\Ub\alpha_s+...\\
+%%&\cancelto{0}{\CDs\To\Top\Ub\alpha_s}-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
+%%\overline{Q_s} \propto &\CDs\To\Ub-\CDs\Ta\Ub-\CDs\overline{\Tap\Up}+\CDs\overline{\Top\Up}+\CDs\overline{\Top^2}\Ub\alpha_s+\CDs\overline{\Top^2\Up}\alpha_s+...\\
+%%&-\CDs\overline{\Tap\Top}\Ub\alpha_s-\CDs\Ta\overline{\Top\Up}\alpha_s-\CDs\overline{\Tap\Top\Up}\alpha_s+\CDs\To\overline{\Top\Up}\alpha_s\\
+%\end{align*}
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
 

@@ -7,6 +7,8 @@ addpath('~/MIT/Research/eddyFlux/ERA5_data/')
 calc_CD_alpha_flag = false;
 plot_flag = true;
 
+alpha_pos_flag = false;
+
 %     % Kurishio
 %     lat_bnds = [25 45];
 %     lon_bnds = [130 170];
@@ -18,28 +20,35 @@ L = 500000; % m
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
-year_vec = 2003;
+year_vec = [2003];
 
 % 2003
-aCd0(:,1) = [  0.0136; -0.0447; 0.0014; 0.0023];
+aCd0(:,1) = [  0.0136; -0.0447; 0.0014; 0.0016];
 
 % 2004
-aCd0(:,2) = [ 0.0180; -0.0501; 0.0014; 0.0024];
+aCd0(:,2) = [ 0.0114; 0.0145; 0.0014; 0.0015];
 
 % 2005
-aCd0(:,3) = [ 0.0167; -0.0458; 0.0014; 0.0023];
+aCd0(:,3) = [ 0.0106; 0.0126; 0.0014; 0.0015];
 
 % 2006
-aCd0(:,4) = [ 0.0054;-0.0507; 0.0014; 0.0022];
+aCd0(:,4) = [ -0.0004; 0.0056; 0.0014; 0.0015];
 
 % 2007
-aCd0(:,5) = [ 0.0133; -0.0481; 0.0014; 0.0024];
+aCd0(:,5) = [ 0.0125; 0.0115; 0.0014; 0.0015];
 
 
 %% parameters for optimization
 
-LB = [-Inf; -Inf; 0; 0];
-UB = [Inf; Inf; Inf; Inf];
+if alpha_pos_flag
+    LB = [0;0; 0; 0];
+    UB = [Inf; Inf; Inf; Inf];
+    con_str = 'cons_';
+else
+    LB = [-Inf; -Inf; 0; 0];
+    UB = [Inf; Inf; Inf; Inf];
+    con_str = '';
+end
 
 options = optimoptions(@fmincon,'Display','iter','steptolerance',1e-5);
 
@@ -59,19 +68,19 @@ for i = 1:length(year_vec)
     
     if calc_CD_alpha_flag
         
-        [x,ffinal] = fmincon(@(aCd) optimize_alpha_CD(aCd,year_vec(i),err_box_bnds_lat,err_box_bnds_lon),aCd0(:,year_vec(i)-2002),[],[],[],[],LB,UB,[],options);
+        [x,ffinal] = fmincon(@(aCd) optimize_alpha_CD(aCd,year_vec(i),err_box_bnds_lat,err_box_bnds_lon,L),aCd0(:,year_vec(i)-2002),[],[],[],[],LB,UB,[],options);
         
         X{i} = x;
         FFINAL{i}  =ffinal;
-        save(sprintf('opt_alpha_CD_%d_to_%d',year_vec(1),year_vec(i)),'X','FFINAL');
+        save(sprintf('opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,year_vec(1),year_vec(i)),'X','FFINAL');
         fprintf('saved %d\n',year_vec(i))
         [aCd0(:,year_vec(i)-2002) X{i}]
         
     elseif plot_flag
         
         year = year_vec(i);
-        
-        filename = sprintf('Qs_QL_optimization_data_%d',year_vec(i));
+        filename = sprintf('Qs_QL_optimization_data_L_%d_%d',L/1000,year_vec(i));
+%         filename = sprintf('Qs_QL_optimization_data_%d',year_vec(i));
         load(filename,'as_multiplier','aL_multiplier','SST_prime','sshf_patch','slhf_patch')
 
         
@@ -82,7 +91,8 @@ for i = 1:length(year_vec)
         
         t_range = 1:size(sshf_patch,3);
         
-        load(sprintf('opt_alpha_CD_%d_to_%d',year_vec(1),year_vec(end)),'X');
+        load(sprintf('opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,year_vec(1),year_vec(i)),'X');
+
         alpha_CD = X{i};
         
         as = alpha_CD(1);
@@ -101,40 +111,6 @@ for i = 1:length(year_vec)
     
     
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
