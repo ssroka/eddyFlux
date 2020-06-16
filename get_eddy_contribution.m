@@ -13,6 +13,8 @@ L_vec = [500000]; % m
 
 alpha_pos_flag = false;
 
+month_str = 'DJFM';
+
 %% filter set up
 
 files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),'SST_patch','lat','lon');
@@ -27,8 +29,6 @@ m_per_deg = 111320; % only used to get the filter width;
 
 dx = d_lat*m_per_deg;
 dy = d_lon*m_per_deg;
-
-
 
 % this is the same for every year
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
@@ -50,8 +50,6 @@ if alpha_pos_flag
 else
     con_str = '';
 end
-
-month_str = '';
 
 for j=1:length(L_vec)
     L=L_vec(j);
@@ -116,15 +114,14 @@ for j=1:length(L_vec)
         
         count = 1;
         fprintf('\n')
-        for tt = tt_inds % time points
-            fprintf(' processing snapshot %d of %d\n',tt,p)
+        for tt = tt_inds' % time points
+            fprintf(' processing snapshot %d of %d\n',tt,tt_inds(end))
             
             [SST_patch_CTRL,SST_prime] = boxcar_filter(SST_patch(:,:,tt),M);
             [P0_patch_CTRL,~] = boxcar_filter(P0_patch(:,:,tt),M);
             [q_diff_CTRL,~] = boxcar_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),M);
             
-            DT_patch = SST_patch(:,:,tt) - t2m_patch(:,:,tt);
-            [DT_patch_CTRL,~] = boxcar_filter(DT_patch,M);
+            [DT_patch_CTRL,~] = boxcar_filter(DT_patch(:,:,tt),M);
             
             [U_mag_CTRL,~] = boxcar_filter(U_mag(:,:,tt),M);
             

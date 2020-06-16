@@ -13,7 +13,9 @@ year_vec = [2003 2007];
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
-             'lat','lon','patch_lat','patch_lon');
+    'lat','lon','patch_lat','patch_lon');
+
+L = 500000;
 
 lat_er = lat(patch_lat);
 lon_er = lon(patch_lon);
@@ -45,13 +47,13 @@ for y = 1:length(year_vec)
     ax = subplot(3,2,6);
     [~,h] = contourf(lon_er,lat_er,nanmean(woLv.model_no_eddy_slhf-wLv.model_no_eddy_slhf,3)');
     format_fig(h,ax)
-    title('no eddy model slhf, 2.26E6 - Lv')
+    title('no eddy model slhf, 2.26E6 - Lv(SST)')
     
     set(gcf,'color','w','position',[ 232  1  1188  801],'NumberTitle','off','Name',num2str(year_vec(y)))
 
+    update_figure_paper_size()
+    print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/eval_Lv_fxn_L_%d_%d',L/1000,year_vec(y)),'-dpdf')
 end
-
-
 
 
 

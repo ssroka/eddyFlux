@@ -1,4 +1,3 @@
-
 clear;close all;clc
 addpath('~/Documents/MATLAB/util/')
 
@@ -39,7 +38,7 @@ for year = 3:7
             srcJFM = '/Volumes/SydneySroka_Anton/ERA5_2007_JFM_31d_6h.nc';
             srcD = '/Volumes/SydneySroka_Anton/ERA5_2006_Dec_31d_6h.nc';
     end
-    
+
     time = double([ncread(srcD,'time');ncread(srcJFM,'time')])*60*60; % hours
     time = datetime(time,'ConvertFrom','epochtime','epoch','1900-01-01');
     

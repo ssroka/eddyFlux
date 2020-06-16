@@ -1,6 +1,6 @@
 clear;clc;close all
 
-year_vec = 2007;
+year_vec = [2003 2007];
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
@@ -12,13 +12,14 @@ L = 500000; % m
 
 intvl = 1; % look at every intvl'th timpepoint
 
+alpha_pos_flag = false;
+
 %% filter set up
 
-files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),'SST_patch','lat','lon');
+files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),'SST_patch','lat','lon','patch_lat','patch_lon');
 
 m = size(files_for_size.SST_patch,1);
 n = size(files_for_size.SST_patch,2);
-p = size(files_for_size.SST_patch,3);
 
 d_lat = abs(files_for_size.lat(2)-files_for_size.lat(1));
 d_lon = abs(files_for_size.lon(2)-files_for_size.lon(1));
@@ -50,6 +51,14 @@ lat_er = lat_er(err_box_bnds_lat);
 lon_er = lon(patch_lon);
 lon_er = lon_er(err_box_bnds_lon);
 
+if alpha_pos_flag
+    con_str = 'cons_';
+else
+    con_str = '';
+end
+
+salinity = 34*ones(m,n);% ppt for Lv calculation
+
 for i = 1:length(year_vec)
     year = year_vec(i);
     dataFile = sprintf('%sERA5_patch_data_%d.mat',data_src,year);
@@ -58,7 +67,7 @@ for i = 1:length(year_vec)
     SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
     
     % coefficients
-    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_alpha_CD_%d_to_%d',2003,2007),'X');
+    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,2003,2007),'X');
     alpha_CD = X{year - 2002};
     
     as = alpha_CD(1);
@@ -67,9 +76,9 @@ for i = 1:length(year_vec)
     CD_s = alpha_CD(3);
     CD_L = alpha_CD(4);
     
-    p_short = length(1:intvl:p);
-    
-    ZEROS = zeros(m,n,p_short,2);
+    p = size(files_for_size.SST_patch,3); % re calculate for leap year
+        
+    ZEROS = zeros(m,n,p,2);
     
     
     term1 = ZEROS;
@@ -113,20 +122,20 @@ for i = 1:length(year_vec)
         term7(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_prime.*DT_patch_CTRL;
         term8(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*DT_diff_prime;
                 
-        term1(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_CTRL.*q_diff_CTRL;
+        term1(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_CTRL.*q_diff_CTRL;
         
-        term2(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*q_diff_CTRL.*SST_prime.*U_mag_prime;
-        term3(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_prime;
-        term4(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_prime.*q_diff_prime;
-        term5(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_prime.*q_diff_prime;
+        term2(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*aL.*q_diff_CTRL.*SST_prime.*U_mag_prime;
+        term3(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_prime;
+        term4(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_prime.*q_diff_prime;
+        term5(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*aL.*SST_prime.*U_mag_prime.*q_diff_prime;
         
-        term6(:,:,count,2) =  rho_a.*Lv.*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_CTRL;
-        term7(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_prime.*q_diff_CTRL;
-        term8(:,:,count,2) =  rho_a.*Lv.*CD_L.*U_mag_CTRL.*q_diff_prime;
+        term6(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_CTRL;
+        term7(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_prime.*q_diff_CTRL;
+        term8(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_CTRL.*q_diff_prime;
                 
         count = count + 1;
     end
-    save(sprintf('flux_terms_%d',year),...
+        save(sprintf('flux_terms_%d_%s%d',L/1000,con_str,year),...
         'term1','term2','term3','term4','term5','term6','term7','term8')
     
 end
