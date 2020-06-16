@@ -11,6 +11,7 @@
 *.eps
 *.fig
 ./imgs_channel/*
+*.pdf
 
 # tex remnants
 *.bbl
