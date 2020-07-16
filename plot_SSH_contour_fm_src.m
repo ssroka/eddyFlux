@@ -3,7 +3,7 @@ clear;
 clc;
 close ;
 
-for j = 4
+for j = 5
     switch j
         case 1
             SSH_src = 'ssh_grids_v1812_2007122812.nc';
@@ -33,15 +33,34 @@ for j = 4
             % ssha_str = 'sea_surface_height_above_sea_level';
         case 4
 %             SSH_src = 'global-reanalysis-phy-001-030-daily_1589857735177.nc';
-            SSH_src = 'global-reanalysis-phy-001-030-daily_1589860194526.nc';
+            SSH_src = 'ssh_data_global/global-reanalysis-phy-001-030-daily_1589860194526.nc';
             ssha_str = 'zos';
             time = ncread(SSH_src,'time')*60*60;
             time = datetime(time,'ConvertFrom','epochtime','epoch','1950-01-01');
             lat = ncread(SSH_src,'latitude');
             lon = ncread(SSH_src,'longitude');
             SSH = ncread(SSH_src,ssha_str);
-            save('global-reanalysis-phy-001-030-daily','SSH','lat','lon','time')
-            contourf(ssha(:,:,1)')
+            save('ssh_data_global/global-reanalysis-phy-001-030-daily_20021201_20070401','SSH','lat','lon','time')
+            contourf(SSH(:,:,1)')
+            colorbar
+        case 5 
+            SSH_src = 'ssh_data_global/global-reanalysis-phy-001-030-daily_1592498841102.nc';
+            ssha_str = 'zos';
+            time_total = ncread(SSH_src,'time')*60*60;
+            time_total = datetime(time_total,'ConvertFrom','epochtime','epoch','1950-01-01');
+            lat = ncread(SSH_src,'latitude');
+            lon = ncread(SSH_src,'longitude');
+            SSH_total = ncread(SSH_src,ssha_str);
+            % save in several batches
+            inds = (time_total.Year<=2012) & ((time_total.Month==12) | (time_total.Month==1) | (time_total.Month==2) | (time_total.Month==3))  ;
+            SSH = SSH_total(:,:,inds);
+            time = time_total(inds);
+            save('global-reanalysis-phy-001-030-daily_20071201_20120331','SSH','lat','lon','time')
+            inds = (time_total.Year>=2012) & ((time_total.Month==12) | (time_total.Month==1) | (time_total.Month==2) | (time_total.Month==3))  ;
+            SSH = SSH_total(:,:,inds);
+            time = time_total(inds);
+            save('global-reanalysis-phy-001-030-daily_20131201_20180331','SSH','lat','lon','time')
+            contourf(SSH(:,:,1)')
             colorbar
             %{
             DOWNLOAD	NAME	DESCRIPTION	STANDARD NAME	UNITS

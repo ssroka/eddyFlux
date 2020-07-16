@@ -1,7 +1,7 @@
 
 clear;clc;close all
 
-year = 2003;
+year_vec = [2003 2007];
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
@@ -9,14 +9,18 @@ addpath('/Users/ssroka/MIT/Research/eddyFlux/filter')
 addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
 addpath('/Users/ssroka/Documents/MATLAB/util/')
 
-L = 200000; % m
+L = 500000; % m
 
 month_str = 'DJFM';
 
+filter_type = 'lanczos_xy'; % filter type 'lanczos' or 'boxcar'
+
+
 %%
 
-
-load(sprintf('term68_%d_%d',L/1000,year),...
+for i = 1:length(year_vec)
+    year = year_vec(i);
+    load(sprintf('term68_%d_%s_%d',L/1000,filter_type,year),...
     'term6','term8','term6_const','term8_const','To_prime','DT_prime',...
     'DT_CTRL','Umag','Dq_CTRL','Dq_prime')
 
@@ -148,11 +152,11 @@ set(gcf,'color','w','position',[61 221 1359 581],'NumberTitle','off','Name',num2
 
 figure(1)
 update_figure_paper_size()
-print(sprintf('imgs/deconstruct_term6_L_%d_%d',L/1000,year),'-dpdf')
+print(sprintf('imgs/deconstruct_term6_L_%d_%s_%d',L/1000,filter_type,year),'-dpdf')
 figure(2)
 update_figure_paper_size()
-print(sprintf('imgs/deconstruct_term8_L_%d_%d',L/1000,year),'-dpdf')
-
+print(sprintf('imgs/deconstruct_term8_L_%d_%s_%d',L/1000,filter_type,year),'-dpdf')
+end
 function [] = format_fig(h,plt_num,max_val,min_val)
 
 set(h,'edgecolor','none')

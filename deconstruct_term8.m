@@ -9,13 +9,17 @@ addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
 addpath('/Users/ssroka/Documents/MATLAB/util/')
 addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
 
-L = 200000; % m
+L = 500000; % m
 
 intvl = 1; % look at every intvl'th timpepoint
 
 alpha_pos_flag = false;
 
+filter_type = 'lanczos_xy'; % filter type 'lanczos' or 'boxcar'
+
 %% filter set up
+
+load('env_const.mat')
 
 files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),'SST_patch','lat','lon','patch_lat','patch_lon');
 
@@ -35,7 +39,11 @@ Nx = floor(L/dx)+mod(floor(L/dx),2)+1; % make Nx odd
 Ny = floor(L/dy)+mod(floor(L/dx),2)+1; % make Ny odd
 
 NaN_inds = isnan(files_for_size.SST_patch(:,:,1));
-
+if strcmp(filter_type,'boxcar')
+    [M] = boxcar_filter_mat(m,n,Ny,Nx,NaN_inds);
+elseif strcmp(filter_type(1:7),'lanczos')
+    cf = (1/(2*L));
+end
 [M] = boxcar_filter_mat(m,n,Ny,Nx,NaN_inds);
 
 % this is the same for every year
@@ -67,8 +75,9 @@ for i = 1:length(year_vec)
     SST_prime = zeros(sum(patch_lon),sum(patch_lat),length(time));
     
     % coefficients
-    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,2003,2007),'X');
-    alpha_CD = X{year - 2002};
+    load(sprintf('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha/opt_aCD_%sfilt_%s_L_%d_%d_to_%d',con_str,filter_type,L/1000,2003,year_vec(i)),'X');
+
+    alpha_CD = X{i};
     
     as = alpha_CD(1);
     aL = alpha_CD(2);
@@ -100,19 +109,19 @@ for i = 1:length(year_vec)
     for tt = 1:intvl:p % time points
         fprintf(' processing snapshot %d of %d\n',tt,p)
         
-        [SST_patch_CTRL,SST_prime] = boxcar_filter(SST_patch(:,:,tt),M);
-        [P0_patch_CTRL,~] = boxcar_filter(P0_patch(:,:,tt),M);
-        
-        [q_diff_CTRL,~] = boxcar_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),M);
-        q_diff_prime = (qo_patch(:,:,tt)-qa_patch(:,:,tt)) - q_diff_CTRL;
-
-        DT_patch = SST_patch(:,:,tt) - t2m_patch(:,:,tt);
-        [DT_patch_CTRL,~] = boxcar_filter(DT_patch,M);
-        DT_diff_prime = (DT_patch) - DT_patch_CTRL;
-        
-        [U_mag_CTRL,~] = boxcar_filter(U_mag(:,:,tt),M);
-        U_mag_prime = U_mag(:,:,tt) - U_mag_CTRL;
-        
+        if strcmp(filter_type,'boxcar')
+            [SST_patch_CTRL,SST_prime] = boxcar_filter(SST_patch(:,:,tt),M);
+            %             [P0_patch_CTRL,~] = boxcar_filter(P0_patch(:,:,tt),M);
+            [q_diff_CTRL,q_diff_prime] = boxcar_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),M);
+            [DT_patch_CTRL,DT_diff_prime] = boxcar_filter(DT_patch(:,:,tt),M);
+            [U_mag_CTRL,U_mag_prime] = boxcar_filter(U_mag(:,:,tt),M);
+        elseif strcmp(filter_type(1:7),'lanczos')
+            [SST_patch_CTRL,SST_prime] = lanczos_filter(SST_patch(:,:,tt),dx,cf);
+            %             [P0_patch_CTRL,~] = lanczos_filter(P0_patch(:,:,tt),dx,cf);
+            [q_diff_CTRL,q_diff_prime] = lanczos_filter(qo_patch(:,:,tt)-qa_patch(:,:,tt),dx,cf);
+            [DT_patch_CTRL,DT_diff_prime] = lanczos_filter(DT_patch(:,:,tt),dx,cf);
+            [U_mag_CTRL,U_mag_prime] = lanczos_filter(U_mag(:,:,tt),dx,cf);
+        end
 
         term6(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*as.*SST_prime.*U_mag_CTRL.*DT_patch_CTRL;
         term8(:,:,count,1) =  rho_a.*c_p_air.*CD_s.*U_mag_CTRL.*DT_diff_prime;
@@ -135,9 +144,10 @@ for i = 1:length(year_vec)
                 
         count = count + 1;
     end
-        save(sprintf('term68_%d_%d',L/1000,year),...
-        'term6','term8','term6_const','term8_const','To_prime','DT_prime',...
-        'DT_CTRL','Umag','Dq_CTRL','Dq_prime')
-    
+      
+        save(sprintf('term68_%d_%s_%d',L/1000,filter_type,year),...
+    'term6','term8','term6_const','term8_const','To_prime','DT_prime',...
+    'DT_CTRL','Umag','Dq_CTRL','Dq_prime')
+
 end
 

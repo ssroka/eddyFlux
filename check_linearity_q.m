@@ -98,7 +98,7 @@ for j=1:length(L_vec)
             
             figure(1)
             plot(q_diff_prime-(q_o_prime-q_a_prime),'ko')
-            title('$\Delta q'' - (q_o''-q_a'')','interpreter','latex')
+            title('$\Delta q'' - (q_o''-q_a'')$','interpreter','latex')
             hold on
             figure(2)
             plot(q_diff_prime,DT_patch_prime,'k*')
@@ -119,6 +119,12 @@ for j=1:length(L_vec)
 
         
     end
+end
+
+for i = 1:4
+   figure(i)
+   set(gca,'fontsize',25)
+    
 end
 
 % plot_eddy_vs_ERA;

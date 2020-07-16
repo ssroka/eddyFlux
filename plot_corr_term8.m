@@ -19,7 +19,7 @@ alpha_pos_flag = false;
 
 L = 500000;
 
-filter_type = 'boxcar'; % filter type 'lanczos' or 'boxcar'
+filter_type = 'lanczos'; % filter type 'lanczos' or 'boxcar'
 
 %% begin
 
@@ -59,6 +59,8 @@ for i = 1:length(year_vec)
     
     load(sprintf('flux_terms_%d_%sfilt_%s_%d',L/1000,con_str,filter_type,year))
     
+    load(sprintf('model_n_ERA_data_L_%d_%s%s_%s_%d',L/1000,con_str,month_str,filter_type,year))
+    
     load(sprintf('%sERA5_patch_data_%d.mat',data_src,year),...
         'lat','lon','patch_lat','patch_lon','time');
     
@@ -82,70 +84,65 @@ for i = 1:length(year_vec)
         p = sum(tt_vec);
         tt_inds = find(tt_vec);
         
+        if j == 1
+            title_str = 'sensible';
+            model_flux = model_full_sshf;
+        else
+            title_str = 'latent';
+            model_flux = model_full_slhf;
+        end
+        
         figure(j)
         ax = subplot(2,4,1);
+        [~,h] = contourf(lon_er,lat_er,nanmean(model_flux(:,:,tt_inds),3)');
+        title(sprintf('model flux $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+        format_fig(h,ax)
+        
+        ax = subplot(2,4,2);
         [~,h] = contourf(lon_er,lat_er,nanmean(term1(:,:,tt_inds,j),3)');
         title(sprintf('term1 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
         format_fig(h,ax)
         
-        ax = subplot(2,4,2);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term2(:,:,tt_inds,j),3)');
-        title(sprintf('term2 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-        format_fig(h,ax)
-        
         ax = subplot(2,4,3);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term3(:,:,tt_inds,j),3)');
-        title(sprintf('term3 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+        [~,h] = contourf(lon_er,lat_er,nanmean(model_flux(:,:,tt_inds)-term1(:,:,tt_inds,j),3)');
+        title(sprintf('model flux - term1 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
         format_fig(h,ax)
         
         ax = subplot(2,4,4);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term4(:,:,tt_inds,j),3)');
-        title(sprintf('term4 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+        [~,h] = contourf(lon_er,lat_er,nanmean(term8(:,:,tt_inds,j),3)');
+        title(sprintf('term8 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
         format_fig(h,ax)
         
         ax = subplot(2,4,5);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term5(:,:,tt_inds,j),3)');
-        title(sprintf('term5 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-        format_fig(h,ax)
-        
+        model_flux_mean = nanmean(model_flux(:,:,tt_inds),3)';
+        term1_mean = nanmean(term1(:,:,tt_inds,j),3)';
+        term8_mean = nanmean(term8(:,:,tt_inds,j),3)';
+        plot(model_flux_mean(:)-term1_mean(:),term8_mean(:),'o');
+        [B,BINT,R,RINT,STATS] = regress(term8_mean(:),[ones(size(term8_mean(:))) model_flux_mean(:)-term1_mean(:)]);
+        xlabel('full - term 1')
+        ylabel('term 8')
+        title(sprintf('$$R^2$$ statistic = %f',STATS(1)),'interpreter','latex')
+        set(gca,'ydir','normal','fontsize',15)
+
         ax = subplot(2,4,6);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term6(:,:,tt_inds,j),3)');
-        title(sprintf('term6 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+        sum_terms = term1(:,:,tt_inds,j)+...
+                    term2(:,:,tt_inds,j)+...
+                    term3(:,:,tt_inds,j)+...
+                    term4(:,:,tt_inds,j)+...
+                    term5(:,:,tt_inds,j)+...
+                    term6(:,:,tt_inds,j)+...
+                    term7(:,:,tt_inds,j)+...
+                    term8(:,:,tt_inds,j);
+        [~,h] = contourf(lon_er,lat_er,nanmean(sum_terms,3)');
+        title(sprintf('$$\\Sigma$$ terms $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
         format_fig(h,ax)
         
         ax = subplot(2,4,7);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term7(:,:,tt_inds,j),3)');
-        title(sprintf('term7 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+        [~,h] = contourf(lon_er,lat_er,nanmean(model_flux(:,:,tt_inds) - sum_terms,3)');
+        title(sprintf('model - $$\\Sigma$$ terms $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
         format_fig(h,ax)
         
-        if strcmp(filter_type,'boxcar')
-            [term8_CTRL,~] = boxcar_filter(nanmean(term8(:,:,tt_inds,j),3),M);
-        elseif strcmp(filter_type(1:7),'lanczos')
-            [term8_CTRL,~] = lanczos_filter(nanmean(term8(:,:,tt_inds,j),3),dx,cf);
-        end
-        
-        ax = subplot(2,4,8);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term8(:,:,tt_inds,j),3)');
-        title(sprintf('term8 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-        format_fig(h,ax)
-        
-        figure(3)
-        ax = subplot(1,2,1);
-        [~,h] = contourf(lon_er,lat_er,nanmean(term8(:,:,tt_inds,j),3)');
-        title(sprintf('term8 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-        format_fig(h,ax)
-        
-        ax = subplot(1,2,2);
-        [~,h] = contourf(lon_er,lat_er,term8_CTRL');
-        title(sprintf('filtered term8 $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
-        format_fig(h,ax)
-        
-        if j == 1
-            title_str = 'sensible';
-        else
-            title_str = 'latent';
-        end
-        
+
         set(gcf,'color','w','position',[ 232  1  1188  801],...
             'NumberTitle','off','Name',sprintf('%s %d',title_str,year))
         
@@ -163,11 +160,11 @@ for i = 1:length(year_vec)
         
         update_figure_paper_size()
         
-%         if add_ssh_flag
-%             print(sprintf('imgs/flux_terms_%s_%s_ssh_L_%d_%s_%d',title_str,month_str,L/1000,filter_type,year),'-dpdf')
-%         else
-%             print(sprintf('imgs/flux_terms_%s_%s_L_%d_%s_%d',title_str,month_str,L/1000,filter_type,year),'-dpdf')
-%         end
+        if add_ssh_flag
+            print(sprintf('imgs/corr_term8_%s_%s_ssh_L_%d_%s_%d',title_str,month_str,L/1000,filter_type,year),'-dpdf')
+        else
+            print(sprintf('imgs/corr_term8_%s_%s_L_%d_%s_%d',title_str,month_str,L/1000,filter_type,year),'-dpdf')
+        end
         
     end
 end

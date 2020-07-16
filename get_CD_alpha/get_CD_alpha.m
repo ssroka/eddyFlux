@@ -4,8 +4,8 @@ addpath('~/Documents/MATLAB/util/')
 addpath('~/MIT/Research/eddyFlux/filter/')
 addpath('~/MIT/Research/eddyFlux/ERA5_data/')
 
-calc_CD_alpha_flag = false;
-plot_flag = true;
+calc_CD_alpha_flag = true;
+plot_flag = false;
 
 alpha_pos_flag = false;
 
@@ -13,32 +13,46 @@ alpha_pos_flag = false;
 %     lat_bnds = [25 45];
 %     lon_bnds = [130 170];
 
-err_box_lat = [32 38];
-err_box_lon = [140 160];
 
 L = 500000; % m
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
-year_vec = [2003];
+filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 
-% 2003
-aCd0(:,1) = [  0.0136; -0.0447; 0.0014; 0.0016];
+year_vec = [2003 2007];
 
-% 2004
-aCd0(:,2) = [ 0.0114; 0.0145; 0.0014; 0.0015];
+% % 2003
+% aCd0(:,1) = [  0.0105; 0.0165; 0.0014; 0.0015];
+% 
+% % 2004
+% aCd0(:,2) = [ 0.0114; 0.0145; 0.0014; 0.0015];
+% 
+% % 2005
+% aCd0(:,3) = [ 0.0106; 0.0126; 0.0014; 0.0015];
+% 
+% % 2006
+% aCd0(:,4) = [ -0.0004; 0.0056; 0.0014; 0.0015];
+% 
+% % 2007
+% aCd0(:,5) = [ 0.0125; 0.0115; 0.0014; 0.0015];
 
-% 2005
-aCd0(:,3) = [ 0.0106; 0.0126; 0.0014; 0.0015];
-
-% 2006
-aCd0(:,4) = [ -0.0004; 0.0056; 0.0014; 0.0015];
-
-% 2007
-aCd0(:,5) = [ 0.0125; 0.0115; 0.0014; 0.0015];
+aCd0 = [0.0038 0.0045 0.0014 0.0015]'; % lanczos
+% aCd0 = [  0.0105; 0.0165; 0.0014; 0.0015]; % boxcar
+aCd0 = [0.0038 0.0045 0.0014 0.0015]'; % fft
 
 
 %% parameters for optimization
+
+if strcmp(filter_type,'boxcar')
+    box_limits = [32 38; 140 160];
+elseif strcmp(filter_type,'fft')
+    cf = (1/(2*L));
+    box_limits = [30 42; 148 168];
+elseif strcmp(filter_type(1:7),'lanczos')
+    cf = (1/(2*L));
+    box_limits = [32 38; 140 160];
+end
 
 if alpha_pos_flag
     LB = [0;0; 0; 0];
@@ -60,6 +74,8 @@ load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
 err_box_bnds_lat = (lat(patch_lat)>err_box_lat(1))&(lat(patch_lat)<err_box_lat(2));
 err_box_bnds_lon = (lon(patch_lon)>err_box_lon(1))&(lon(patch_lon)<err_box_lon(2));
 
+box_lat = lat>=box_limits(1,1) & lat<=box_limits(1,2);
+box_lon = lon>=box_limits(2,1) & lon<=box_limits(2,2);
 
 X = cell(length(year_vec),1);
 FFINAL = cell(length(year_vec),1);
@@ -68,18 +84,19 @@ for i = 1:length(year_vec)
     
     if calc_CD_alpha_flag
         
-        [x,ffinal] = fmincon(@(aCd) optimize_alpha_CD(aCd,year_vec(i),err_box_bnds_lat,err_box_bnds_lon,L),aCd0(:,year_vec(i)-2002),[],[],[],[],LB,UB,[],options);
+        [x,ffinal] = fmincon(@(aCd) optimize_alpha_CD(aCd,year_vec(i),err_box_bnds_lat,err_box_bnds_lon,L,filter_type),aCd0,[],[],[],[],LB,UB,[],options);
         
         X{i} = x;
         FFINAL{i}  =ffinal;
-        save(sprintf('opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,year_vec(1),year_vec(i)),'X','FFINAL');
+        save(sprintf('opt_aCD_%sfilt_%s_L_%d_%d_to_%d',con_str,filter_type,L/1000,year_vec(1),year_vec(i)),'X','FFINAL');
         fprintf('saved %d\n',year_vec(i))
-        [aCd0(:,year_vec(i)-2002) X{i}]
+        [aCd0 X{i}]
         
-    elseif plot_flag
+    end
+    if plot_flag
         
         year = year_vec(i);
-        filename = sprintf('Qs_QL_optimization_data_L_%d_%d',L/1000,year_vec(i));
+        filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_%d',L/1000,filter_type,year_vec(i));
 %         filename = sprintf('Qs_QL_optimization_data_%d',year_vec(i));
         load(filename,'as_multiplier','aL_multiplier','SST_prime','sshf_patch','slhf_patch')
 
@@ -91,7 +108,7 @@ for i = 1:length(year_vec)
         
         t_range = 1:size(sshf_patch,3);
         
-        load(sprintf('opt_alpha_L_%d_%sCD_%d_to_%d',L/1000,con_str,year_vec(1),year_vec(i)),'X');
+        load(sprintf('opt_aCD_%sfilt_%s_L_%d_%d_to_%d',con_str,filter_type,L/1000,year_vec(1),year_vec(i)),'X','FFINAL');
 
         alpha_CD = X{i};
         
