@@ -2,19 +2,19 @@ plt_error_box = false;
 
 t_range = 1:484;
 
-year_vec = [2003 2007];
+year_vec = [2003];
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
 add_ssh_flag = false;
 
-L = 500000 ; % m
+L = 250000 ; % m
 
 alpha_pos_flag = false;
 
 month_str = 'DJFM';
 
-filter_type = 'boxcar'; % filter type 'lanczos' or 'boxcar'
+filter_type = 'fft'; % filter type 'lanczos' or 'boxcar'
 
 
 %% begin
@@ -57,20 +57,60 @@ for i = 1:length(year_vec)
         
     else
         
-        model_sshf = nanmean(model_full_sshf(:,:,t_range),3)';
-        model_slhf = nanmean(model_full_slhf(:,:,t_range),3)';
         
-        model_sshf_no_eddy = nanmean(model_no_eddy_sshf(:,:,t_range),3)';
-        model_slhf_no_eddy = nanmean(model_no_eddy_slhf(:,:,t_range),3)';
         
-        ERA5_sshf = nanmean(sshf_patch(:,:,t_range),3)';
-        ERA5_slhf = nanmean(slhf_patch(:,:,t_range),3)';
-        
-        ERA5_sshf_CTRL = nanmean(era_no_eddy_sshf(:,:,t_range),3)';
-        ERA5_slhf_CTRL = nanmean(era_no_eddy_slhf(:,:,t_range),3)';
-        
-        lat_er = lat(patch_lat);
-        lon_er = lon(patch_lon);
+        if strcmp(filter_type,'fft')
+            
+            cf = (1/(2*L));
+            box_opt = [32 38; 143 167];
+            
+            file_for_box = load(sprintf('Qs_QL_optimization_data_L_%d_filt_%s_%d',L/1000,filter_type,2003),'box_limits');
+            
+            box_lat = lat>=box_opt(1,1) & lat<=box_opt(1,2);
+            box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
+            
+            %             % to index out of *_patch fields
+            opt_patch_lat = box_lat(patch_lat);
+            opt_patch_lon = box_lon(patch_lon);
+            
+            prime_lat =  lat>=file_for_box.box_limits(1,1) & lat<=file_for_box.box_limits(1,2);
+            prime_lon = lon>=file_for_box.box_limits(2,1) & lon<=file_for_box.box_limits(2,2);
+            %
+            %             % to index out of *_prime fields
+            opt_prime_lat = box_lat(prime_lat);
+            opt_prime_lon = box_lon(prime_lon);
+            
+            lat_er = lat(box_lat);
+            lon_er = lon(box_lon);
+            
+            model_sshf = nanmean(model_full_sshf(:,:,t_range),3)';
+            model_slhf = nanmean(model_full_slhf(:,:,t_range),3)';
+            
+            model_sshf_no_eddy = nanmean(model_no_eddy_sshf(:,:,t_range),3)';
+            model_slhf_no_eddy = nanmean(model_no_eddy_slhf(:,:,t_range),3)';
+            
+            ERA5_sshf = nanmean(sshf_patch(opt_patch_lon,opt_patch_lat,t_range),3)';
+            ERA5_slhf = nanmean(slhf_patch(opt_patch_lon,opt_patch_lat,t_range),3)';
+            
+            ERA5_sshf_CTRL = nanmean(era_no_eddy_sshf(:,:,t_range),3)';
+            ERA5_slhf_CTRL = nanmean(era_no_eddy_slhf(:,:,t_range),3)';
+            
+        else
+            model_sshf = nanmean(model_full_sshf(:,:,t_range),3)';
+            model_slhf = nanmean(model_full_slhf(:,:,t_range),3)';
+            
+            model_sshf_no_eddy = nanmean(model_no_eddy_sshf(:,:,t_range),3)';
+            model_slhf_no_eddy = nanmean(model_no_eddy_slhf(:,:,t_range),3)';
+            
+            ERA5_sshf = nanmean(sshf_patch(:,:,t_range),3)';
+            ERA5_slhf = nanmean(slhf_patch(:,:,t_range),3)';
+            
+            ERA5_sshf_CTRL = nanmean(era_no_eddy_sshf(:,:,t_range),3)';
+            ERA5_slhf_CTRL = nanmean(era_no_eddy_slhf(:,:,t_range),3)';
+            
+            lat_er = lat(patch_lat);
+            lon_er = lon(patch_lon);
+        end
         
     end
     

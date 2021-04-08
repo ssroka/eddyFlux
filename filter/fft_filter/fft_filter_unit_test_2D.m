@@ -14,93 +14,111 @@ clear;close all;clc
 % (or you could change the length of the input NT to some
 % non-whole number) the output is not exact
 
-T1 = 2*pi; % [s] period of signal 1
-T2 = pi;   % [s] period of signal 1
+f1 = 7; % [1/s] frq of signal 1
+f2 = 1;  % [1/s] period of signal 2
 
-L = 500; % length of signal
+L = 800; % length of signal
 N = L;
 
-NT = 3;
+NT = 1;
 
-cT = 1.5*pi; % cutoff period;
+cf = 5; % cutoff frq;
 
+debug_flag = false;
 %%
 
 t = linspace(0,2*pi*NT,L);
-
-f1 = 1/T1;
-f2 = 2*pi/T2;
-
-cf = 1/cT;
+dt = t(2)-t(1);
 
 [X,Y] = meshgrid(t,t);
 
-s1 = cos(2*pi/T1*X)+cos(2*pi/T1*Y);
-s2 = cos(2*pi/T2*X)+cos(2*pi/T2*Y);
+s1 = cos(2*pi*f1*X);%+cos(f1*Y);
+s2 = cos(2*pi*f2*X);%+cos(f2*Y);
 
 s = s1+s2;
 
-subplot(4,2,1)
+% subplot(4,2,1)
+% contourf(t,t,s1)
+% title(sprintf('signal 1, f = %2.2f rad/s',f1))
+%
+% subplot(4,2,2)
+% contourf(t,t,s2)
+% title(sprintf('signal 2, f = %2.2f rad/s',f2))
+
+% subplot(4,2,3)
+% contourf(t,t,s1,'b','displayname',sprintf('signal 1, f = %2.2f rad/s',f1))
+% hold on
+% contourf(t,t,s2,'r','displayname',sprintf('signal 2, f = %2.2f rad/s',f2))
+% contourf(t,t,s,'k','displayname',sprintf('signal'))
+% title('signal1 + signal 2')
+
+
+
+% [S_LP,S_HP] = FFT2D_filter(s,dt,cf,debug_flag,t,t);
+close all
+
+sum_s1s2 = s1+s2;
+[sum_LP,sum_HP] = FFT2D_filter(sum_s1s2,dt,cf,debug_flag,t,t);
+
+
+[sum_HP_LP,sum_HP_HP] = FFT2D_filter(sum_LP,dt,cf,debug_flag,t,t);
+[sum_HP_LP,sum_HP_HP] = FFT2D_filter(sum_HP,dt,cf,debug_flag,t,t);
+
+% debug_flag = true;
+prod_s1s2 = s1.*s2;
+[prod_LP,prod_HP] = FFT2D_filter(prod_s1s2,dt,cf,debug_flag,t,t);
+
+%%
+figure(3)
+subplot(4,3,1)
 contourf(t,t,s1)
 title(sprintf('signal 1, f = %2.2f rad/s',f1))
 
-subplot(4,2,2)
+subplot(4,3,4)
 contourf(t,t,s2)
-title(sprintf('signal 2, f = %2.2f rad/s',f1))
+title(sprintf('signal 2, f = %2.2f rad/s',f2))
 
-subplot(4,2,3)
-contourf(t,t,s1,'b','displayname',sprintf('signal 1, f = %2.2f rad/s',f1))
+subplot(4,3,7)
+plot(t,s1(1,:))
 hold on
-contourf(t,t,s2,'r','displayname',sprintf('signal 2, f = %2.2f rad/s',f2))
-contourf(t,t,s,'k','displayname',sprintf('signal'))
-title('signal1 + signal 2')
+plot(t,s2(1,:))
+title(sprintf('signal 1, f = %2.2f rad/s\\signal 2, f = %2.2f rad/s',f1,f2))
 
+%
+subplot(4,3,2)
+contourf(t,t,sum_s1s2)
+title(sprintf('signal 1 + signal 2'))
 
-Fs = L/(2*pi*NT); % samples per period, L samples for NT periods
-F = [-N/2:N/2-1]/N*Fs;
+subplot(4,3,8)
+contourf(t,t,sum_LP)
+title(sprintf('LP(signal 1 + signal 2)'))
 
-[Xhat,Yhat] = meshgrid(F,F);
+subplot(4,3,11)
+contourf(t,t,sum_HP)
+title(sprintf('HP(signal 1 + signal 2)'))
 
+%
+subplot(4,3,3)
+contourf(t,t,prod_s1s2)
+title(sprintf('signal 1 x signal 2'))
 
+subplot(4,3,6)
+contourf(t,t,prod_LP)
+title(sprintf('LP(signal 1 x signal 2)'))
 
-Zhat = fft2(s);
+subplot(4,3,9)
+[~,h] = contourf(t,t,prod_HP);
+set(h,'edgecolor','none')
+title(sprintf('HP(signal 1 x signal 2)'))
 
-Zhat = fftshift(abs(Zhat));
+subplot(4,3,12)
+[~,h] = contourf(t,t,prod_s1s2 -(prod_LP+prod_HP));
+set(h,'edgecolor','none')
+title(sprintf('s1s2-(LP(s1 x s2)+HP(s1 x s2))\\should vanish'))
 
-Zhat_LP = Zhat;
-Zhat_HP = Zhat;
-
-inds = sqrt(Xhat.^2+Yhat.^2)>cf;
-Zhat_LP(inds) = 0.01;
-
-inds = sqrt(Xhat.^2+Yhat.^2)<cf;
-Zhat_HP(inds) = 0.01;
-
-Z_LP = ifft2(ifftshift(Zhat_LP));
-Z_HP = ifft2(ifftshift(Zhat_HP));
-
-
-subplot(4,2,4)
-contourf(F,F,abs(Zhat),'displayname','FFT(s)');
-hold on 
-title('FFT(signal1 + signal 2)')
-
-
-subplot(4,2,5)
-contourf(F,F,abs(Zhat_LP),'--','displayname','FFT(s)');
-title('low pass')
-
-subplot(4,2,6)
-contourf(F,F,abs(Zhat_HP),'--','displayname','FFT(s)');
-title('high pass')
-
-subplot(4,2,7)
-contourf(t,t,abs(Z_LP))
-title('low pass')
-
-subplot(4,2,8)
-contourf(t,t,abs(Z_HP))
-title('high pass')
-
-set(gcf,'position',[440           1        1001         797])
-
+for i = 1:12
+    subplot(4,3,i)
+    set(gca,'xtick',[0:6]*pi,'ytick',[0:6]*pi,'xlim',[0 2*pi])
+    colorbar
+end
+    set(gcf,'position',[132           7        1120         798])

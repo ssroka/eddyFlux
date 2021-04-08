@@ -3,9 +3,10 @@ clear;close all;clc
 
 year_vec = [2003:2019];
 
-L_vec = [500000];
+L_vec = [250000];
 
-filter_type = 'lanczos'; % filter type 'lanczos' or 'boxcar'
+filter_type = 'fft'; % filter type 'lanczos' or 'boxcar'
+param_num_str = '_3param';
 
 m = 'so^';
 c = [252 154 69;
@@ -32,29 +33,28 @@ for y = 1:length(year_vec)
             
             L = L_vec(i);
             
-            load(sprintf('opt_aCD_%sfilt_%s_L_%d_%d_to_%d',con_str,filter_type,L/1000,year_vec(1),year_vec(y)),'X','FFINAL');
-
-            plot(1:length(X{1}),X{year-2002},'color',c(y,:),'marker',m(i),'markerfacecolor',mrkr_clr,...
-                'markersize',20,'displayname',sprintf('L = %d km%s, %d',L/1000,con_name,year),'linewidth',2)
-            set(gca,'fontsize',20,'xtick',[1:4],'xticklabel',{'$$\alpha_s$$','$$\alpha_L$$','$$C_D^s$$','$$C_D^L$$'},'ticklabelinterpreter','latex')
-            lh = legend('-dynamiclegend');
-            set(lh,'interpreter','latex')
-            hold on
-            
+            load(sprintf('opt_aCD_%sfilt_%s_L_%d%s_%d_to_%d',con_str,filter_type,L/1000,param_num_str,year_vec(1),year_vec(y)),'X','FFINAL','box_opt');
+            as(y) = X{year-2002}(1);
+            aL(y) = X{year-2002}(2);
+            CD(y) = X{year-2002}(3);
         end
-        
     end
-    
-    set(gcf,'color','w','position',[ 232  1  1188  801],'NumberTitle','off','Name',filter_type)
-    
-    
-
 end
 
-title(filter_type)
-    update_figure_paper_size()
+plot(year_vec,as,'kx-','displayname','$\alpha_s$','linewidth',2);
+hold on
+plot(year_vec,aL,'bs-','displayname','$\alpha_L$','linewidth',2);
+xlabel('year')
+lh = legend('-dynamiclegend');
+set(lh,'interpreter','latex')
+hold on
+set(gca,'fontsize',25)
+set(gcf,'color','w','position',[ 232  1  1188  801],'NumberTitle','off','Name',filter_type)
 
-    print(sprintf('../imgs/cmp_alpha_CD_L_%d_%s',L/1000,filter_type),'-dpdf')
+title('$\alpha$ coefficients','interpreter','latex')
+update_figure_paper_size()
+
+print(sprintf('../imgs/cmp_alpha_CD_L_%d_%s',L/1000,filter_type),'-dpdf')
 
 
 

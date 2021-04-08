@@ -1,36 +1,49 @@
-function [mean_er] = optimize_alpha_CD(alpha_CD,year,err_box_bnds_lat,err_box_bnds_lon,L,filter_type)
+function [mean_er] = optimize_alpha_CD(alpha_CD,year,opt_prime_lat,opt_prime_lon,opt_patch_lat,opt_patch_lon,L,filter_type,box_num)
 
 %{
 
 
 %}
 
-filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_%d',L/1000,filter_type,year);
+filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year);
+
 load(filename,'as_multiplier','aL_multiplier','SST_prime','sshf_patch','slhf_patch')
 
-as = alpha_CD(1);
-aL = alpha_CD(2);
-
-CD_s = alpha_CD(3);
-CD_L = alpha_CD(4);
-
-
-%     as_multiplier = rho_a.*c_p_air.*U_mag.*(SST_patch-t2m_patch);
-%     aL_multiplier = rho_a.*Lv.*U_mag.*(qo_patch-qa_patch);
-
-
-sshf_model = CD_s.*(1+as.*SST_prime).*as_multiplier;
-slhf_model = CD_L.*(1+aL.*SST_prime).*aL_multiplier;
-
-
-
-er = (sshf_model(err_box_bnds_lon,err_box_bnds_lat,:) - sshf_patch(err_box_bnds_lon,err_box_bnds_lat,:)).^2+...
-    + (slhf_model(err_box_bnds_lon,err_box_bnds_lat,:) - slhf_patch(err_box_bnds_lon,err_box_bnds_lat,:)).^2;
-
-mean_er = sqrt(nanmean(nanmean(nanmean(er))));
-
-
-
+if numel(alpha_CD)==4
+    as = alpha_CD(1);
+    aL = alpha_CD(2);
+    
+    CD_s = alpha_CD(3);
+    CD_L = alpha_CD(4);
+    
+    %     as_multiplier = rho_a.*c_p_air.*U_mag.*(SST_patch-t2m_patch);
+    %     aL_multiplier = rho_a.*Lv.*U_mag.*(qo_patch-qa_patch);
+    
+    sshf_model = CD_s.*(1+as.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*as_multiplier(opt_prime_lon,opt_prime_lat,:);
+    slhf_model = CD_L.*(1+aL.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*aL_multiplier(opt_prime_lon,opt_prime_lat,:);
+    
+    er = (sshf_model - sshf_patch(opt_patch_lon,opt_patch_lat,:)).^2+...
+        + (slhf_model - slhf_patch(opt_patch_lon,opt_patch_lat,:)).^2;
+    
+    mean_er = sqrt(nanmean(nanmean(nanmean(er))));
+elseif  numel(alpha_CD)==3
+    
+    as = alpha_CD(1);
+    aL = alpha_CD(2);
+    
+    CD = alpha_CD(3);
+    
+    %     as_multiplier = rho_a.*c_p_air.*U_mag.*(SST_patch-t2m_patch);
+    %     aL_multiplier = rho_a.*Lv.*U_mag.*(qo_patch-qa_patch);
+    
+    sshf_model = CD.*(1+as.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*as_multiplier(opt_prime_lon,opt_prime_lat,:);
+    slhf_model = CD.*(1+aL.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*aL_multiplier(opt_prime_lon,opt_prime_lat,:);
+    
+    er = (sshf_model - sshf_patch(opt_patch_lon,opt_patch_lat,:)).^2+...
+        + (slhf_model - slhf_patch(opt_patch_lon,opt_patch_lat,:)).^2;
+    
+    mean_er = sqrt(nanmean(nanmean(nanmean(er))));
+end
 
 end
 

@@ -6,6 +6,7 @@ data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
 addpath('/Users/ssroka/MIT/Research/eddyFlux/filter')
 addpath('/Users/ssroka/MIT/Research/eddyFlux/filter/lanczosfilter/')
+addpath('/Users/ssroka/MIT/Research/eddyFlux/filter/fft_filter/')
 addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
 addpath('/Users/ssroka/Documents/MATLAB/util/')
 addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
@@ -16,7 +17,7 @@ intvl = 1; % look at every intvl'th timpepoint
 
 alpha_pos_flag = false;
 
-filter_type = 'lanczos_xy'; % filter type 'lanczos' or 'boxcar'
+filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 
 %% filter set up
 
@@ -49,16 +50,16 @@ end
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon');
 
-err_box_lat = [32 38];
-err_box_lon = [140 160];
-
-err_box_bnds_lat = (lat(patch_lat)>err_box_lat(1))&(lat(patch_lat)<err_box_lat(2));
-err_box_bnds_lon = (lon(patch_lon)>err_box_lon(1))&(lon(patch_lon)<err_box_lon(2));
-
-lat_er = lat(patch_lat);
-lat_er = lat_er(err_box_bnds_lat);
-lon_er = lon(patch_lon);
-lon_er = lon_er(err_box_bnds_lon);
+% err_box_lat = [32 38];
+% err_box_lon = [140 160];
+% 
+% err_box_bnds_lat = (lat(patch_lat)>err_box_lat(1))&(lat(patch_lat)<err_box_lat(2));
+% err_box_bnds_lon = (lon(patch_lon)>err_box_lon(1))&(lon(patch_lon)<err_box_lon(2));
+% 
+% lat_er = lat(patch_lat);
+% lat_er = lat_er(err_box_bnds_lat);
+% lon_er = lon(patch_lon);
+% lon_er = lon_er(err_box_bnds_lon);
 
 if alpha_pos_flag
     con_str = 'cons_';
@@ -150,6 +151,8 @@ for i = 1:length(year_vec)
         term6(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*aL.*SST_prime.*U_mag_CTRL.*q_diff_CTRL;
         term7(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_prime.*q_diff_CTRL;
         term8(:,:,count,2) =  rho_a.*SW_LatentHeat(SST_patch(:,:,tt),'K',salinity,'ppt').*CD_L.*U_mag_CTRL.*q_diff_prime;
+        
+        
         
         count = count + 1;
     end

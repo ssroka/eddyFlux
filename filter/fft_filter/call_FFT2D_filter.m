@@ -37,8 +37,8 @@ lon_er = lon_er(lon_inds);
 
 s = nanmean(SST_patch(lon_inds,lat_inds,:),3)';
 
-m = size(SST_patch,1);
-n = size(SST_patch,2);
+m = size(s,1);
+n = size(s,2);
 
 d_lat = abs(lat(2)-lat(1));
 d_lon = abs(lon(2)-lon(1));
@@ -54,10 +54,8 @@ figure
 contourf(lon_er,lat_er,nanmean(slhf_patch(lon_inds,lat_inds,:),3)')
 
 % ------- preprocess data for filtering -----------------------------------
-s = s - mean(s(:));
 
-s = detrend(s); % detrend columns
-s = detrend(s')'; % detrend rows
+
 
 debug_flag = true;
 
@@ -66,5 +64,6 @@ debug_flag = true;
 set(gcf,'position',[440           1        1001         797])
 update_figure_paper_size()
 print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/test_fft_%d',year),'-dpdf')
+
 
 
