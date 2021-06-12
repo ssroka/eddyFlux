@@ -26,30 +26,30 @@
 % % % % debug_flag = false;
 % % % % 
 % % % % box_num = 1;
-function [] = make_multipliers_beta(year_vec,L,data_src,filter_type,box_num,box_opt,cf,debug_flag)
+function [] = make_multipliers_beta(year_vec,L,data_src,filter_type,box_num,box_opt,cf,debug_flag,rho_a)
 %% begin optimizing for CD and alpha
 files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
     'SST_patch','lat','lon','patch_lat','patch_lon');
 
-if strcmp(filter_type,'boxcar')
-    box_opt = [25 45; 130 170];
-elseif strcmp(filter_type,'fft')
-    cf = (1/(2*L));
-%     box_limits = [30 40; 143 168];
-%     box_limits = [30 42; 144 168];
-%     box_limits = [30 44.5; 148 169];
-%     box_limits = [36 41.5; 143 152];
-elseif strcmp(filter_type(1:7),'lanczos')
-    cf = (1/(2*L));
-    box_opt = [25 45; 130 170];
-end
+% if strcmp(filter_type,'boxcar')
+%     box_opt = [25 45; 130 170];
+% elseif strcmp(filter_type,'fft')
+%     cf = (1/(2*L));
+% %     box_limits = [30 40; 143 168];
+% %     box_limits = [30 42; 144 168];
+% %     box_limits = [30 44.5; 148 169];
+% %     box_limits = [36 41.5; 143 152];
+% elseif strcmp(filter_type(1:7),'lanczos')
+%     cf = (1/(2*L));
+%     box_opt = [25 45; 130 170];
+% end
 
-switch box_num
-    case 1
-        box_opt = [36 41.5; 143 152];
-    case 2
-        box_opt = [30 44.5; 148 169];
-end
+% switch box_num
+%     case 1
+%         box_opt = [36 41.5; 143 152];
+%     case 2
+%         box_opt = [30 44.5; 148 169];
+% end
 
 
 box_lat = files_for_size.lat>=box_opt(1,1) & files_for_size.lat<=box_opt(1,2);

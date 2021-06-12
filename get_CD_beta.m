@@ -85,10 +85,10 @@ options = optimoptions(@fmincon,'Display','iter','steptolerance',1e-5);
 
 %% begin optimizing for CD and alpha
 
-load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
+load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon');
 
-file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,2003),'box_opt');
+file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
 
 box_lat = lat>=box_opt(1,1) & lat<=box_opt(1,2);
 box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
@@ -137,22 +137,14 @@ for i = 1:length(year_vec)
         t_range = 1:size(sshf_patch,3);
         
         load(sprintf('opt_bCD_%sfilt_%s_L_%d_box%d_%d',con_str,filter_type,L/1000,box_num,year_vec(i)),'X','FFINAL','box_opt');
-
+        
         beta_CD = X{i};
         
-        bs = beta_CD(1);
-        bL = beta_CD(2);
+        b = beta_CD(2);
+        CD = beta_CD(1);
         
-        if numel(beta_CD)==4
-            CD_s = beta_CD(3);
-            CD_L = beta_CD(4);
-        elseif numel(beta_CD)==3
-            CD_s = beta_CD(3);
-            CD_L = beta_CD(3);
-        end
-         
-        sshf_model = CD_s.*(U_bar+bs.*SST_prime).*bs_multiplier;
-        slhf_model = CD_L.*(U_bar+bL.*SST_prime).*bL_multiplier;
+        sshf_model = CD.*(U_bar+b.*SST_prime).*bs_multiplier;
+        slhf_model = CD.*(U_bar+b.*SST_prime).*bL_multiplier;
         
         sshf_model_opt = sshf_model(opt_prime_lon,opt_prime_lat,t_range);
         slhf_model_opt = slhf_model(opt_prime_lon,opt_prime_lat,t_range);
@@ -208,4 +200,56 @@ if plot_flag
 
 end
 
+
+% plot the cost function as a function of iteration number
+% plot CD and beta as a function of iteration number
+% work on get a measure of error in the flux, could have an rms error
+% between the flux and the simulated flux for each year
+% the cost function itself won't tell us as much as the rms error 
+% we're probably improtving the flux by an amount similar to beta at a time
+% 
+% experimenting with very simple air-sea interaction
+% cd-ref and one parameter either alpha or beta
+% beta goes on the wind speed and the alpha model wer're playing with Cd
+% and model beta we're saying the wind speed is 
+% beta 2004 chelton
+% assessing the performance of very simple air-sea interaction model
+% one is the wind speed based one
+% one is the 
+%{
+
+even though the wind speed doesn't make a big contribution the
+there is skill even 
+
+from this model it suggests that the mesoscale ot hte winter time average
+is weak
+the stationary average w/in a winter the time mean is important becasue
+regardless of the order of filtering it works
+so the time mean eddy
+
+do the combined model to change the wind speed and the cd
+
+see what the model result is
+
+and then see the rms errror in watt/m2
+which performs better
+
+maybe the diff btwn models is at most 0.1 m^2 
+
+een though their contrib is small their result is consistent with other
+code
+
+John Marshall paper - interaction of nao with oceans
+
+with higher res data there is more interest in the mesoscale contrib to the
+flux so this is a way to break down
+
+we can see how these terms matter impact on cd and impact on wind speed
+
+this contribution is coming from the stationary eddies
+% experimenting with idealized air-sea interaction models
+% 
+
+
+%}
 

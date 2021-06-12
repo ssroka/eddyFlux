@@ -11,16 +11,15 @@ load(filename,'bs_multiplier','bL_multiplier','SST_prime','U_bar','sshf_patch','
 
 
 
-bs = beta_CD(1);
-bL = beta_CD(2);
 
-CD = beta_CD(3);
+CD = beta_CD(1);
+b = beta_CD(2);
 
 %     as_multiplier = rho_a.*c_p_air.*U_mag.*(SST_patch-t2m_patch);
 %     aL_multiplier = rho_a.*Lv.*U_mag.*(qo_patch-qa_patch);
 
-sshf_model = CD.*(U_bar+bs.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*bs_multiplier(opt_prime_lon,opt_prime_lat,:);
-slhf_model = CD.*(U_bar+bL.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*bL_multiplier(opt_prime_lon,opt_prime_lat,:);
+sshf_model = CD.*(U_bar+b.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*bs_multiplier(opt_prime_lon,opt_prime_lat,:);
+slhf_model = CD.*(U_bar+b.*SST_prime(opt_prime_lon,opt_prime_lat,:)).*bL_multiplier(opt_prime_lon,opt_prime_lat,:);
 
 er = (sshf_model - sshf_patch(opt_patch_lon,opt_patch_lat,:)).^2+...
     + (slhf_model - slhf_patch(opt_patch_lon,opt_patch_lat,:)).^2;

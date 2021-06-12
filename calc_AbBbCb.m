@@ -54,18 +54,18 @@ elseif strcmp(filter_type(1:7),'lanczos')
     cf = (1/(2*L));
 end
 
-switch box_num
-    case 1
-        box_opt = [36 41.5; 143 152];
-    case 2
-        box_opt = [30 44.5; 148 169];
-end
+% switch box_num
+%     case 1
+%         box_opt = [36 41.5; 143 152];
+%     case 2
+%         box_opt = [30 44.5; 148 169];
+% end
 
 % this is the same for every year
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon');
 
-file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,2003),'box_opt');
+file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
 
 box_lat = lat>=box_opt(1,1) & lat<=box_opt(1,2);
 box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
@@ -114,10 +114,9 @@ for i = 1:length(year_vec)
 
         beta_CD = X{i};
         
-        bs = beta_CD(1);
-        bL = beta_CD(2);
-        
-        CD = beta_CD(3);
+
+        b = beta_CD(2);
+        CD = beta_CD(1);
 
 
     p = size(SST_patch,3); % re calculate for leap year
@@ -131,8 +130,6 @@ for i = 1:length(year_vec)
     Db = ZEROS;
     sshf_patch_bar = ZEROS;
     slhf_patch_bar = ZEROS;
-    bdh_bar = ZEROS;
-    bdh_prime = ZEROS;
     U_bar = ZEROS;
     U_prime = ZEROS;
     To_prime = ZEROS;
@@ -141,6 +138,11 @@ for i = 1:length(year_vec)
     Dq_prime =  ZEROS;
     SST =  ZEROS;
     
+    
+    filename = sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year);
+    load(filename,'bs_multiplier','bL_multiplier','SST_prime','U_bar','sshf_patch','slhf_patch')
+
+
     count = 1;
     fprintf('\n')
     for tt = 1:intvl:p % time points
@@ -173,25 +175,21 @@ for i = 1:length(year_vec)
             Lv = SW_LatentHeat(SST_patch(opt_patch_lon,opt_patch_lat,tt),'K',salinity,'ppt');
             
             % h
-            h_diff = Lv.*Dq +...
-                c_p_air.*(DT_patch(opt_patch_lon,opt_patch_lat,tt));
-            [h_diff_bar_tt,h_diff_prime_tt] = FFT2D_filter(h_diff,dx,cf,debug_flag,lat_plot,lon_plot);
+            CD_h_diff = CD*(bs_multiplier(:,:,tt) + bL_multiplier(:,:,tt));
+%             CD_h_diff = rho_a*CD.*Lv.*Dq +...
+%                 rho_a*CD.*c_p_air.*(DT_patch(opt_patch_lon,opt_patch_lat,tt));
+            [CD_h_diff_bar_tt,CD_h_diff_prime_tt] = FFT2D_filter(CD_h_diff,dx,cf,debug_flag,lat_plot,lon_plot);
             %             h_diff_prime = h_diff - h_diff_CTRL;
             
-            % alpha h
-            bh_diff = bL.*Lv.*(qo_patch(opt_patch_lon,opt_patch_lat,tt)-qa_patch(opt_patch_lon,opt_patch_lat,tt)) +...
-                bs.*c_p_air.*(DT_patch(opt_patch_lon,opt_patch_lat,tt));
-            [bh_diff_bar_tt,bh_diff_prime_tt] = FFT2D_filter(bh_diff,dx,cf,debug_flag,lat_plot,lon_plot);
-            %             ah_diff_prime = ah_diff - ah_diff_CTRL;
-            
+          
             % U
             [U_bar_tt,U_prime_tt] = FFT2D_filter(U_mag(opt_patch_lon,opt_patch_lat,tt),dx,cf,debug_flag,lat_plot,lon_plot);
             %             U_mag_prime = U_mag(opt_patch_lon,opt_patch_lat,tt) - U_mag_CTRL;
             
-            Ab_full = rho_a*CD*U_bar_tt.*h_diff_bar_tt;
-            Bb_full = rho_a*CD*U_bar_tt.*(DT_prime_tt+Dq_prime_tt);
-            Cb_full = rho_a*CD.*SST_prime_tt.*bh_diff_prime_tt;
-            Db_full = rho_a*CD.*SST_prime_tt.*bh_diff_bar_tt;
+            Ab_full = U_bar_tt.*CD_h_diff;
+            Bb_full = U_bar_tt.*CD_h_diff_prime_tt;
+            Cb_full = b.*SST_prime_tt.*CD_h_diff_prime_tt;
+            Db_full = b.*SST_prime_tt.*CD_h_diff_bar_tt;
 
             
             if fft_first_flag
@@ -221,10 +219,8 @@ for i = 1:length(year_vec)
             %                 study_ABC
             %             end
             
-            dh_bar(:,:,count) = h_diff_bar_tt;
-            dh_prime(:,:,count) = h_diff_prime_tt;
-            bdh_bar(:,:,count) = bh_diff_bar_tt;
-            bdh_prime(:,:,count) = bh_diff_prime_tt;
+            dh_bar(:,:,count) = CD_h_diff_bar_tt;
+            dh_prime(:,:,count) = CD_h_diff_prime_tt;
             U_bar(:,:,count) = U_bar_tt;
             U_prime(:,:,count) = U_prime_tt;
             To_prime(:,:,count) = SST_prime_tt;
@@ -247,8 +243,8 @@ for i = 1:length(year_vec)
     end
     save(sprintf('AbBbCb_terms_%d_%sfilt_%s%s_box%d_%d',L/1000,con_str,fft_str,filter_type,box_num,year),...
         'Ab','Bb','Cb','Db','slhf_patch_bar','sshf_patch_bar','SST',...
-        'dh_bar','dh_prime','bdh_bar','bdh_prime','U_bar','U_prime','To_prime','Dq_prime',...
-        'dx','cf','debug_flag','lat_plot','lon_plot','bs','bL','CD')
+        'dh_bar','dh_prime','U_bar','U_prime','To_prime','Dq_prime',...
+        'dx','cf','debug_flag','lat_plot','lon_plot','b','CD')
     fprintf('\nsaving Ab,Bb and Cb for %d\n',year)
      
 end

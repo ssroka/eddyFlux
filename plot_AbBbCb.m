@@ -57,12 +57,12 @@ elseif strcmp(filter_type(1:7),'lanczos')
     cf = (1/(2*L));
 end
 
-switch box_num
-    case 1
-        box_opt = [36 41.5; 143 152];
-    case 2
-        box_opt = [30 44.5; 148 169];
-end
+% switch box_num
+%     case 1
+%         box_opt = [36 41.5; 143 152];
+%     case 2
+%         box_opt = [30 44.5; 148 169];
+% end
 
 % this is the same for every year
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
@@ -121,25 +121,26 @@ for i = 1:length(year_vec)
     load(dataFile,'qo_patch','qa_patch','SST_patch','DT_patch')
     load(sprintf('AbBbCb_terms_%d_%sfilt_%s%s_box%d_%d',L/1000,con_str,fft_str,filter_type,box_num,year))
     
+
     figure(1)
     ax = subplot(2,2,1);
     [~,h] = contourf(lon_plot,lat_plot,nanmean(Ab,3)');
-    title('A:$\rho_a C_D\overline{\overline{U}\overline{\Delta h}}$','interpreter','latex')
+    title('A:$\overline{C_D\overline{U}\hspace{2mm}\overline{\Delta h}}$','interpreter','latex')
     format_fig(h,ax)
     
     ax = subplot(2,2,2);
     [~,h] = contourf(lon_plot,lat_plot,nanmean(Bb,3)');
-    title('B:$\rho_a C_D\overline{\overline{U}\Delta h''}$','interpreter','latex')
+    title('B:$\overline{C_D\overline{U}\Delta h''}$','interpreter','latex')
     format_fig(h,ax)
     
     ax = subplot(2,2,3);
     [~,h] = contourf(lon_plot,lat_plot,nanmean(Cb,3)');
-    title('C:$\rho_a C_D\overline{\beta T_o'' \Delta h''}$','interpreter','latex')
+    title('C:$\overline{C_D\beta T_o'' \Delta h''}$','interpreter','latex')
     format_fig(h,ax)
     
     ax = subplot(2,2,4);
     [~,h] = contourf(lon_plot,lat_plot,nanmean(Db,3)');
-    title('D:$\rho_a C_D\overline{\beta T_o''\overline{\Delta h}}$','interpreter','latex')
+    title('D:$\overline{C_D\beta T_o''\overline{\Delta h}}$','interpreter','latex')
     format_fig(h,ax)
     
     

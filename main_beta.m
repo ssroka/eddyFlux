@@ -22,18 +22,18 @@ filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 
 debug_flag = false;
 
-box_num = 2;
+box_num = 3;
 
 
 calc_CD_beta_flag = true;
-plot_flag = true;
+plot_flag = false;
 
 %     % Kurishio
 %     lat_bnds = [25 45];
 %     lon_bnds = [130 170];
 
 
-bCd0 =   [  0.2087  0.3381    0.0014]'; % fft L = 250 km 
+bCd0 =   [0.00014 0.03]'; % [0.0014 0.3]'; % fft L = 250 km 
 
 %
 
@@ -42,6 +42,8 @@ switch box_num
         box_opt = [36 41.5; 143 152];
     case 2
         box_opt = [30 44.5; 148 169];
+    case 3
+        box_opt = [30 41.5; 142.5 169];
 end
 
 if strcmp(filter_type,'boxcar')
@@ -60,26 +62,30 @@ end
 beta_pos_flag = false;
 
 if beta_pos_flag
-    LB = [0;0; 0];
-    UB = [Inf; Inf; Inf];
+    LB = [0;0];
+    UB = [Inf; Inf];
     con_str = 'cons_';
 else
-    LB = [-Inf; -Inf; 0];
-    UB = [Inf; Inf; Inf];
+    LB = [-Inf; 0];
+    UB = [Inf; Inf];
     con_str = '';
 end
-
-year1 = 2003;
 
 intvl = 1; % look at every intvl'th timpepoint
 
 fft_first_flag = true;
 
+if fft_first_flag
+    fft_str = '';
+else
+    % fft_str = 'noFFT_'; USE calc_ABC_time_mean_then_fft if you want this
+    % option
+end
 
+rho_a = 1.2;
 
 %%
-make_multipliers_beta(year_vec,L,data_src,filter_type,box_num,box_opt,cf,debug_flag);
-% make_multipliers
+make_multipliers_beta(year_vec,L,data_src,filter_type,box_num,box_opt,cf,debug_flag,rho_a);
 get_CD_beta;
 
 calc_AbBbCb
