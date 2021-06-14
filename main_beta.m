@@ -1,8 +1,12 @@
 
 clear;close all;clc
+
 fileloc = mfilename('fullpath');
 filedir = fileloc(1:max(strfind(fileloc,'/')));
 cd(filedir)
+
+
+
 addpath('~/Documents/MATLAB/util/')
 addpath('~/MIT/Research/eddyFlux/filter/')
 addpath('~/MIT/Research/eddyFlux/filter/lanczosfilter/')
