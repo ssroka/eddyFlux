@@ -56,8 +56,11 @@ ylabel('deg')
 set(gcf,'color','w','position',[407  1  1013 801],'NumberTitle','off','Name',num2str(year))
 
 update_figure_paper_size()
-print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_%d_%s_%s_%d',L/1000,filter_type,model_str,year),'-dpdf')
-
+if abs(abCD_factor-1)<1e-10
+    print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+else
+    print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_%d_%s_box%d_%s_%d_abCDFAC_%s',L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+end
 figure(1000)
 subplot(2,2,1)
 contourf(lon_box,lat_box,(mean_sshf_ERA5_box-mean_model_sshf)./mean_sshf_ERA5_box)
@@ -94,7 +97,8 @@ ylabel('deg')
 set(gcf,'color','w','position',[407  1  1013 801],'NumberTitle','off','Name',num2str(year))
 
 update_figure_paper_size()
-print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_rel_er_%d_%s_%s_%d',L/1000,filter_type,model_str,year),'-dpdf')
+print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_rel_er_%d_%s_box%d_%s_%d_abCDFAC_%s',L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+
 
 
 

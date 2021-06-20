@@ -5,12 +5,33 @@ https://resources.marine.copernicus.eu/?option=com_csw&view=order&record_id=c063
 
 %}
 % clear;clc;close all
+
+box_num = 3;
+
+switch box_num
+    case 1
+        box_opt = [36 41.5; 143 152];
+    case 2
+        box_opt = [30 44.5; 148 169];
+    case 3
+        box_opt = [30 41.5; 142.5 169];
+    case 4
+        box_opt = [30 41.5; 142.5 153];
+    case 5
+        box_opt = [30 41.5; 153 169];
+end
+    
+model_str = 'alpha';
+
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon','sshf_patch','slhf_patch');
 
 % filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year);
 
-file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
+% file_for_box = load(sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
+filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year_vec(1));
+file_for_box = load(filename,'bs_multiplier','bL_multiplier','U_bar','SST_prime','sshf_patch','slhf_patch');
+setup_lat_lon_vec;
 
 box_lat = lat>=box_opt(1,1) & lat<=box_opt(1,2);
 box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
@@ -19,8 +40,8 @@ box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
 opt_patch_lat = box_lat(patch_lat);
 opt_patch_lon = box_lon(patch_lon);
 
-prime_lat =  lat>=file_for_box.box_opt(1,1) & lat<=file_for_box.box_opt(1,2);
-prime_lon = lon>=file_for_box.box_opt(2,1) & lon<=file_for_box.box_opt(2,2);
+prime_lat =  lat>=box_opt(1,1) & lat<=box_opt(1,2);
+prime_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
 
 % to index out of *_prime fields
 opt_prime_lat = box_lat(prime_lat);
@@ -45,7 +66,7 @@ if strcmp(filter_type,'boxcar')
 end
 
 
-year_vec = [2003 2007];
+year_vec = [2003:2018];
 
 data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
 
@@ -57,21 +78,22 @@ addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
 %     box_opt = [32 38; 143 167];
 %     box_opt = [30 42; 144 168];
 % box_opt = [30 44.5; 148 169];
-box_opt = [30 41.5; 142.5 169];
+% box_opt = [30 41.5; 142.5 169];
 cntr = [0:0.2:0.8];
 
 %% filter set up
 load('env_const.mat')
 
-load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
-    'SST_patch','lat','lon','patch_lat','patch_lon',...
-    'slhf_patch','sshf_patch');
-
-cntr_length = zeros(length(cntr),length(year_vec));
 d = zeros(length(cntr),length(year_vec));
 
 for j = 1:length(year_vec)
     year = year_vec(j);
+    
+    load(sprintf('%sERA5_patch_data_%d.mat',data_src,year),...
+        'SST_patch','lat','lon','patch_lat','patch_lon',...
+        'slhf_patch','sshf_patch');
+    
+    cntr_length = zeros(length(cntr),length(year_vec));
     
     fprintf('year %d\n',year)
     
@@ -112,10 +134,10 @@ for j = 1:length(year_vec)
         end
     end
     SSH = SSH(:,:,1:count-1);
-    figure(year)
     
     meanSSH = mean(SSH,3);
     
+    figure(year)
     [~,ch] = contourf(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
         meanSSH);
     clim = get(gca,'clim');
@@ -129,12 +151,13 @@ for j = 1:length(year_vec)
     set(gca,'fontsize',25)
     set(gcf,'color','w','position',[1 215 1439 587],'NumberTitle','off','Name',num2str(year))
     title(['SSH variance (colorbar), white contours = time mean',num2str(year)])
+    
     C(:,C(1,:)<20) = [];
     Vq = interp2(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
         meanSSH,C(1,:),C(2,:));
     for i = 1:length(cntr)
-%         bM = regionprops(meanSSH>=cntr(i),'Perimeter');
-%         cntr_length(i,j) = bM.Perimeter;
+        %         bM = regionprops(meanSSH>=cntr(i),'Perimeter');
+        %         cntr_length(i,j) = bM.Perimeter;
         inds = find(abs(Vq-cntr(i))<1e-10);
         for k = 1:length(inds)-1
             delta = norm(C(:,k+1)-C(:,k));
@@ -143,32 +166,22 @@ for j = 1:length(year_vec)
             end
         end
     end
+%     load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year),'sshf_patch','slhf_patch')
+    load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(j)),...
+    'sshf_patch','slhf_patch');
 
-        load(sprintf('AbBbCb_terms_%d_%sfilt_%s%s_box%d_%d',L/1000,con_str,fft_str,filter_type,box_num,year))
-
-      SSHF_mean = nanmean(nanmean(sshf_patch(opt_patch_lon,opt_patch_lat,1)));
-    SLHF_mean = nanmean(nanmean(slhf_patch(opt_patch_lon,opt_patch_lat,1)));
+    SSHF_mean = nanmean(nanmean(nanmean(sshf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:),3)));
+    SLHF_mean = nanmean(nanmean(nanmean(slhf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:),3)));
     
-HF(j) =   SSHF_mean+  SLHF_mean;
+    HF(j) =   SSHF_mean+  SLHF_mean;
     %{
         inds = C(1,:)<20;
         C(:,inds) = [];
         plot(C(1,:),C(2,:),'mo')
         
         
-        %}
-%     d = 0;
-%     for i = 1121:1454
-%         d = d + norm(C(:,i+1)-C(:,i));
-%     end
-%         d2 = 0;
-%     for i = 1098:1119
-%         d2 = d2 + norm(C(:,i+1)-C(:,i));
-%     end
-%         d3 = 0;
-%     for i = 1456:1543
-%         d3 = d3 + norm(C(:,i+1)-C(:,i));
-%     end
+    %}
+
     
     %     update_figure_paper_size()
     %     print(sprintf('imgs/ssh_%d',year),'-dpdf')
@@ -186,13 +199,29 @@ ylabel('distance [deg]')
 set(gca,'fontsize',25,'xtick',cntr)
 set(gcf,'color','w','position',[1 215 1439 587])
 
-figure
-
-plot(d(3,:),HF)
-
-
-
 
 update_figure_paper_size()
-print(sprintf('imgs/ssh_length_%d',year),'-dpdf')
-    
+print(sprintf('imgs/ssh_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)),'-dpdf')
+
+%%
+figure
+
+plot(d(3,:),HF,'x','linewidth',2,'markersize',10)
+hold on
+for i = 1:length(year_vec)
+   th = text(d(3,i)+0.25,HF(i),num2str(year_vec(i)));
+   set(th,'fontsize',15)
+end
+
+% fit line
+p = polyfit(d(3,:),HF,1);
+h = plot(d(3,:),polyval(p,d(3,:)),'r','linewidth',2);
+lh = legend(h,sprintf('m = %3.2f $W/m^2/deg$',p(1)));
+set(lh,'interpreter','latex');
+xlabel('SSH length of 0.4m contour [deg]','interpreter','latex')
+ylabel('mean total flux $[W/m^2]$','interpreter','latex')
+set(gca,'fontsize',25)
+set(gcf,'color','w','position',[1 215 1439 587])
+
+update_figure_paper_size()
+print(sprintf('imgs/ssh_length_vs_HF_box%d_%s_%d_%d',box_num,model_str,year_vec(1),year_vec(end)),'-dpdf')

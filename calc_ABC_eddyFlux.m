@@ -218,8 +218,8 @@ for i = 1:length(year_vec)
                 end
                 
                 
-                dh_bar(:,:,count) = CD_h_diff_bar_tt;
-                dh_prime(:,:,count) = CD_h_diff_prime_tt;
+                dh_bar(:,:,count) = CD_h_diff_bar_tt./CD;
+                dh_prime(:,:,count) = CD_h_diff_prime_tt./CD;
                 U_bar(:,:,count) = U_bar_tt;
                 U_prime(:,:,count) = U_prime_tt;
                 To_prime(:,:,count) = SST_prime_tt;
@@ -288,7 +288,7 @@ for i = 1:length(year_vec)
                 Lv = SW_LatentHeat(SST_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,tt),'K',salinity,'ppt');
                 
                 % h
-                CD_h_diff = CD*(bs_multiplier(:,:,tt) + bL_multiplier(:,:,tt));
+                CD_h_diff = CD*(abs_multiplier(:,:,tt) + abL_multiplier(:,:,tt));
                 %             CD_h_diff = rho_a*CD.*Lv.*Dq +...
                 %                 rho_a*CD.*c_p_air.*(DT_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,tt));
                 [CD_h_diff_bar_tt,CD_h_diff_prime_tt] = FFT2D_filter(CD_h_diff,dx,cf,debug_flag,lat_box,lon_box);
@@ -339,8 +339,8 @@ for i = 1:length(year_vec)
                 end
                 
                 
-                dh_bar(:,:,count) = CD_h_diff_bar_tt;
-                dh_prime(:,:,count) = CD_h_diff_prime_tt;
+                dh_bar(:,:,count) = CD_h_diff_bar_tt./CD;
+                dh_prime(:,:,count) = CD_h_diff_prime_tt./CD;
                 U_bar(:,:,count) = U_bar_tt;
                 U_prime(:,:,count) = U_prime_tt;
                 To_prime(:,:,count) = SST_prime_tt;
