@@ -7,6 +7,7 @@ mean_abs_error = abs(nanmean(tot_er,3)./nanmean(sshf_ERA5_box+slhf_ERA5_box,3));
 subplot(1,3,1)
 contourf(lon_box,lat_box,mean_sshf_ERA5_box+mean_slhf_ERA5_box)
 colorbar
+<<<<<<< HEAD
 x_tick = get(gca,'xtick');
 x_tick_plot = cell(1,length(x_tick));
 for i = 1:length(x_tick)
@@ -26,6 +27,54 @@ title(sprintf('$$\\left(Q^{ERA5}\\right)_{\\overline{t}}$$ $$[$$ Wm$$^{-2}]$$'),
 xlabel('longitude','Interpreter','latex')
 ylabel('latitude','Interpreter','latex')
 clim_sshf = get(gca,'clim');
+=======
+set(gca,'ydir','normal','fontsize',15,'clim',clim_sshf)
+title(sprintf('model SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+xlabel('deg')
+ylabel('deg')
+
+
+subplot(3,2,4)
+contourf(lon_box,lat_box,mean_model_slhf)
+colorbar
+set(gca,'ydir','normal','fontsize',15,'clim',clim_slhf)
+title(sprintf('model SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+xlabel('deg')
+ylabel('deg')
+
+subplot(3,2,5)
+contourf(lon_box,lat_box,mean_sshf_ERA5_box-mean_model_sshf)
+colorbar
+set(gca,'ydir','normal','fontsize',15)
+title(sprintf('ERA5 - model SSHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+xlabel('deg')
+ylabel('deg')
+
+subplot(3,2,6)
+contourf(lon_box,lat_box,mean_slhf_ERA5_box - mean_model_slhf)
+colorbar
+set(gca,'ydir','normal','fontsize',15)
+title(sprintf('ERA5 -model SLHF $$[$$ Wm$$^{-2}]$$'),'interpreter','latex')
+xlabel('deg')
+ylabel('deg')
+
+set(gcf,'color','w','position',[407  1  1013 801],'NumberTitle','off','Name',num2str(year))
+
+update_figure_paper_size()
+if abs(abCD_factor-1)<1e-10
+    print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+else
+    print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_%d_%s_box%d_%s_%d_abCDFAC_%s',L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+end
+figure(1000)
+subplot(2,2,1)
+contourf(lon_box,lat_box,(mean_sshf_ERA5_box-mean_model_sshf)./mean_sshf_ERA5_box)
+colorbar
+set(gca,'ydir','normal','fontsize',15)
+title(sprintf('(ERA5(x,y) - model(x,y))/ERA5(x,y) SSHF '),'interpreter','latex')
+xlabel('deg')
+ylabel('deg')
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 
 subplot(1,3,2)
 contourf(lon_box,lat_box,mean_model_sshf+mean_model_slhf)
@@ -52,11 +101,17 @@ ylabel('latitude','Interpreter','latex')
 set(gcf,'color','w','position',[1         509        1438         296],'NumberTitle','off','Name',num2str(year))
 
 update_figure_paper_size()
+<<<<<<< HEAD
 if all(abs(abCD_factor-1)<1e-10)
     print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
 else
     print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
 end
+=======
+print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/cmp_model_ERA5_rel_er_%d_%s_box%d_%s_%d_abCDFAC_%s',L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+
+
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 
 
 

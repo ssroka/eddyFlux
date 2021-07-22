@@ -28,7 +28,11 @@ for i = 1:length(year_vec)
         filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
         load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%s_%d',con_str,filter_type,L/1000,box_num,model_str,year_vec(i)),'abCD','FFINAL','box_opt');
         
+<<<<<<< HEAD
         abCD = abCD.*abCD_factor;
+=======
+        abCD = abCD*abCD_factor;
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
         
         switch model_str
             case 'alpha'

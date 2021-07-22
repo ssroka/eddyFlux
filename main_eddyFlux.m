@@ -24,25 +24,41 @@ data_src =[data_base  'ERA5_data/'];
 year_vec = [2003 2007];
 L        = 250000; % m
 filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
+<<<<<<< HEAD
 box_num = 3;
 for abCD_fac_vec = [1]
 intvl = 1; % look at every intvl'th ti mpepoint
 model_str = 'alphabeta'; % 'alpha' 'beta' 'alphabeta'
+=======
+box_num = 5;
+intvl = 1; % look at every intvl'th ti mpepoint
+model_str = 'alpha'; % 'alpha' 'beta' 'alphabeta'
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 load('env_const.mat'); % load rho_a and c_p_air
 
 debug_flag = false;
 % plot_flag = false;
+<<<<<<< HEAD
 calc_alpha_beta_CD_flag = false;
 plot_model_ERA_err_flag = false;
 calc_model_ERA_rms_err_flag = false;
 alpha_pos_flag = false;
 beta_pos_flag = false;
 fft_first_flag = true; % don't touch!!
+=======
+calc_alpha_beta_CD_flag = true;
+plot_model_ERA_err_flag = true;
+abCD_factor = 1;
+alpha_pos_flag = false;
+beta_pos_flag = false;
+fft_first_flag = true;
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 plot_all_alpha_beta_CD = false;
 plot_all_ABC_vs_year = false;
 plot_all_QandC = false;
 plot_ABC_comp = false;
 %% SETUP
+<<<<<<< HEAD
 if strcmp(model_str,'alphabeta')
     abCD_factor = [abCD_fac_vec abCD_fac_vec 1]';
 else
@@ -50,6 +66,8 @@ else
 end
 
 
+=======
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 if plot_all_alpha_beta_CD || plot_all_ABC_vs_year
     model_str_cell = {'alpha','beta','alphabeta'};
 else
@@ -61,6 +79,7 @@ for ii_model_str = 1:length(model_str_cell)
     switch model_str
         case 'alpha'
             abCD0 =   [  0.01    0.0014]';
+<<<<<<< HEAD
             model_str_title = '\alpha';
         case 'beta'
             abCD0 =   [  0.3     0.0014]';
@@ -68,6 +87,12 @@ for ii_model_str = 1:length(model_str_cell)
         case 'alphabeta'
             abCD0 =   [  0.01  0.3 0.0014]';
             model_str_title = '\alpha\beta';
+=======
+        case 'beta'
+            abCD0 =   [  0.3     0.0014]';
+        case 'alphabeta'
+            abCD0 =   [  0.01  0.3 0.0014]';
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
     end
     
     switch box_num
@@ -113,6 +138,7 @@ for ii_model_str = 1:length(model_str_cell)
         % fft_str = 'noFFT_'; USE calc_ABC_time_mean_then_fft if you want this
         % option
     end
+<<<<<<< HEAD
     if all(abs(abCD_factor-1)<1e-10)
         abCD_fac_str = '';
     else
@@ -122,6 +148,9 @@ for ii_model_str = 1:length(model_str_cell)
         end
         abCD_fac_str = abCD_fac_str(1:end-1);
     end
+=======
+    
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
     %% RUN
     setup_lat_lon_vec;
     load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
@@ -131,11 +160,19 @@ for ii_model_str = 1:length(model_str_cell)
     m_per_deg = 111320;
     dx = abs(d_lat*m_per_deg);
     
+<<<<<<< HEAD
     if ~(plot_all_alpha_beta_CD || plot_all_ABC_vs_year || plot_all_QandC || plot_ABC_comp || calc_model_ERA_rms_err_flag)
 %         make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str);
         get_CD_a_b_eddyFlux;
 %         calc_ABC_eddyFlux;
 %         plot_ABC_eddyFlux;
+=======
+    if ~(plot_all_alpha_beta_CD || plot_all_ABC_vs_year || plot_all_QandC || plot_ABC_comp)
+        make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str);
+        get_CD_a_b_eddyFlux;
+        calc_ABC_eddyFlux;
+        plot_ABC_eddyFlux;
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
     else
         if plot_all_alpha_beta_CD
             plot_alpha_beta_CD_per_param
@@ -149,12 +186,18 @@ for ii_model_str = 1:length(model_str_cell)
         if plot_ABC_comp
             plot_ABC_comp_eddyFlux;
         end
+<<<<<<< HEAD
         if calc_model_ERA_rms_err_flag
             calc_rms_error_model_ERA5;
         end
+=======
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
     end
     
     
 end
+<<<<<<< HEAD
 end
+=======
+>>>>>>> 9c55f0c62a0fbd90d8c3a9a5f04c6e48ab356b28
 

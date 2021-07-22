@@ -133,6 +133,55 @@ for i = 1:length(year_vec)
 %                 set(gca,'clim',[-1 1])
             end
             
+            figure(1)
+            ax = subplot(2,4,1);
+            [~,h] = contourf(lon_box,lat_box,nanmean(Aab,3)');
+            title('A:$\rho_a C_D\overline{\overline{U}\overline{\Delta h}}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,2);
+            [~,h] = contourf(lon_box,lat_box,nanmean(Bab,3)');
+            title('B:$\rho_a C_D\overline{\overline{U}\Delta h''}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,3);
+            [~,h] = contourf(lon_box,lat_box,nanmean(C1ab,3)');
+            title('C1:$\rho_a C_D\overline{\overline{U}T_o''\alpha \overline{\Delta h}}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,4);
+            [~,h] = contourf(lon_box,lat_box,nanmean(C2ab,3)');
+            title('C2:$\rho_a C_D\overline{\overline{U}T_o''\alpha \Delta h''}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,5);
+            [~,h] = contourf(lon_box,lat_box,nanmean(D1ab,3)');
+            title('D1:$\rho_a C_D\overline{T_o''\beta \overline{\Delta h}}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,6);
+            [~,h] = contourf(lon_box,lat_box,nanmean(D2ab,3)');
+            title('D2:$\rho_a C_D\overline{T_o''\beta  \Delta h''}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,7);
+            [~,h] = contourf(lon_box,lat_box,nanmean(E1ab,3)');
+            title('E1:$\rho_a C_D\overline{ (T_o'')^2\alpha\beta \overline{\Delta h}}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            ax = subplot(2,4,8);
+            [~,h] = contourf(lon_box,lat_box,nanmean(E2ab,3)');
+            title('E2:$\rho_a C_D\overline{ (T_o'')^2\alpha\beta \Delta h''}$','interpreter','latex')
+            format_fig(h,ax)
+            
+            for i = 2:8
+                subplot(2,4,i)
+                set(gca,'clim',[-1 1])
+            end
+            set(gcf,'color','w','position',[61 221 1359 581])
+            update_figure_paper_size()
+            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_L_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            
     end
     set(gcf,'color','w','position',[61 221 1359 581])
     update_figure_paper_size()
