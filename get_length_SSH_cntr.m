@@ -5,12 +5,53 @@ https://resources.marine.copernicus.eu/?option=com_csw&view=order&record_id=c063
 
 %}
 % clear;clc;close all
+
+
+% data_base = '/Users/ssroka/MIT/Research/eddyFlux/';
+data_base = '/Volumes/SydneySroka_Remy/eddyFlux/';
+year_vec = [2003:2018];
+L        = 250000; % m
+filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
+data_src = [data_base 'ERA5_data/'];
+debug_flag = false;
+% plot_flag = false;
+calc_alpha_beta_CD_flag = true;
+plot_model_ERA_err_flag = true;
+abCD_factor = 1;
+alpha_pos_flag = false;
+beta_pos_flag = false;
+fft_first_flag = true;
+plot_all_alpha_beta_CD = false;
+plot_all_ABC_vs_year = false;
+plot_all_QandC = false;
+plot_ABC_comp = false;
+
+box_num = 3;
+
+switch box_num
+    case 1
+        box_opt = [36 41.5; 143 152];
+    case 2
+        box_opt = [30 44.5; 148 169];
+    case 3
+        box_opt = [30 41.5; 142.5 169];
+    case 4
+        box_opt = [30 41.5; 142.5 153];
+    case 5
+        box_opt = [30 41.5; 153 169];
+end
+
+model_str = 'beta';
+
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
     'lat','lon','patch_lat','patch_lon','sshf_patch','slhf_patch');
 
 % filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year);
 
-file_for_box = load(sprintf('beta_Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
+% file_for_box = load(sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%d',L/1000,filter_type,box_num,year_vec(1)),'box_opt');
+% filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year_vec(1));
+% file_for_box = load(filename,'sshf_patch','slhf_patch');
+setup_lat_lon_vec;
 
 box_lat = lat>=box_opt(1,1) & lat<=box_opt(1,2);
 box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
@@ -19,8 +60,8 @@ box_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
 opt_patch_lat = box_lat(patch_lat);
 opt_patch_lon = box_lon(patch_lon);
 
-prime_lat =  lat>=file_for_box.box_opt(1,1) & lat<=file_for_box.box_opt(1,2);
-prime_lon = lon>=file_for_box.box_opt(2,1) & lon<=file_for_box.box_opt(2,2);
+prime_lat =  lat>=box_opt(1,1) & lat<=box_opt(1,2);
+prime_lon = lon>=box_opt(2,1) & lon<=box_opt(2,2);
 
 % to index out of *_prime fields
 opt_prime_lat = box_lat(prime_lat);
@@ -38,50 +79,50 @@ else
     con_str = '';
 end
 
-salinity = 34*ones(m,n);% ppt for Lv calculation
+% salinity = 34*ones(m,n);% ppt for Lv calculation
 
-if strcmp(filter_type,'boxcar')
-    [M] = boxcar_filter_mat(m,n,Ny,Nx,NaN_inds);
-end
+% if strcmp(filter_type,'boxcar')
+%     [M] = boxcar_filter_mat(m,n,Ny,Nx,NaN_inds);
+% end
 
 
-year_vec = [2003 2007];
 
-data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
-
-addpath('/Users/ssroka/MIT/Research/eddyFlux/filter')
-addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
-addpath('/Users/ssroka/Documents/MATLAB/util/')
-addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
+% data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
+addpath([data_base 'filter'])
+addpath([data_base 'get_CD_alpha'])
+addpath(['/Users/ssroka/Documents/MATLAB/util/'])
+addpath(['/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns'])
 
 %     box_opt = [32 38; 143 167];
 %     box_opt = [30 42; 144 168];
 % box_opt = [30 44.5; 148 169];
-box_opt = [30 41.5; 142.5 169];
+% box_opt = [30 41.5; 142.5 169];
 cntr = [0:0.2:0.8];
+cntr_plot = [-0.2:0.2:1];
 
 %% filter set up
 load('env_const.mat')
 
-load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
-    'SST_patch','lat','lon','patch_lat','patch_lon',...
-    'slhf_patch','sshf_patch');
-
-cntr_length = zeros(length(cntr),length(year_vec));
 d = zeros(length(cntr),length(year_vec));
 
 for j = 1:length(year_vec)
     year = year_vec(j);
     
+    load(sprintf('%sERA5_patch_data_%d.mat',data_src,year),...
+        'SST_patch','lat','lon','patch_lat','patch_lon',...
+        'slhf_patch','sshf_patch');
+    
+    cntr_length = zeros(length(cntr),length(year_vec));
+    
     fprintf('year %d\n',year)
     
     % SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/CCAR_SSH_data/SSH_20000103_20090627_CCAR.mat','lon','lat','time','SSH');
     if year<2008 & year>2002
-        SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/ssh_data_global/global-reanalysis-phy-001-030-daily_20021201_20070401.mat','lon','lat','time','SSH');
+        SSH_data = load([data_base 'ssh_data_global/global-reanalysis-phy-001-030-daily_20021201_20070401.mat'],'lon','lat','time','SSH');
     elseif year<2013 & year>2007
-        SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/ssh_data_global/global-reanalysis-phy-001-030-daily_20071201_20120331.mat','lon','lat','time','SSH');
+        SSH_data = load([data_base 'ssh_data_global/global-reanalysis-phy-001-030-daily_20071201_20120331.mat'],'lon','lat','time','SSH');
     elseif year>2012 & year<2018
-        SSH_data = load('/Users/ssroka/MIT/Research/eddyFlux/ssh_data_global/global-reanalysis-phy-001-030-daily_20131201_20180331.mat','lon','lat','time','SSH');
+        SSH_data = load([data_base 'ssh_data_global/global-reanalysis-phy-001-030-daily_20131201_20180331.mat'],'lon','lat','time','SSH');
         
     end
     
@@ -100,99 +141,114 @@ for j = 1:length(year_vec)
     %     case 2007
     %         ssh_lvl = 0.5;
     % end
-    SSH = zeros(sum(patch_lat_SSH),sum(patch_lon_SSH),length(SSH_data.time));
+    SSH_mat = zeros(sum(patch_lat_SSH),sum(patch_lon_SSH),length(SSH_data.time));
     count = 1;
     clear SSH_4_mean
     for i = 1:length(SSH_data.time)
         Dec_SSH = (SSH_data.time.Year(i)==year-1) && (SSH_data.time.Month(i) == 12);
         JFM_SSH = (SSH_data.time.Year(i)==year) && (SSH_data.time.Month(i) <= 3);
         if (Dec_SSH || JFM_SSH)
-            SSH(:,:,count) = SSH_data.SSH(patch_lon_SSH,patch_lat_SSH,i)';
+            SSH_mat(:,:,count) = SSH_data.SSH(patch_lon_SSH,patch_lat_SSH,i)';
             count = count + 1;
         end
     end
-    SSH = SSH(:,:,1:count-1);
-    figure(year)
+    SSH_mat = SSH_mat(:,:,1:count-1);
+    %         meanSSH = mean(SSH,3);
     
-    meanSSH = mean(SSH,3);
-    
-    [~,ch] = contourf(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
-        meanSSH);
-    clim = get(gca,'clim');
-    hold on
-    [C,h] = contour(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
-        meanSSH,cntr,'w','linewidth',2);
-    clabel(C,h,'color','w')
-    set(h,'levellist',cntr)
-    set(gca,'clim',clim)
-    colorbar
-    set(gca,'fontsize',25)
-    set(gcf,'color','w','position',[1 215 1439 587],'NumberTitle','off','Name',num2str(year))
-    title(['SSH variance (colorbar), white contours = time mean',num2str(year)])
-    C(:,C(1,:)<20) = [];
-    Vq = interp2(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
-        meanSSH,C(1,:),C(2,:));
-    for i = 1:length(cntr)
-%         bM = regionprops(meanSSH>=cntr(i),'Perimeter');
-%         cntr_length(i,j) = bM.Perimeter;
-        inds = find(abs(Vq-cntr(i))<1e-10);
-        for k = 1:length(inds)-1
-            delta = norm(C(:,k+1)-C(:,k));
-            if delta < 0.25
-                d(i,j) = d(i,j) + delta;
+    for ii_SSH = 1:size(SSH_mat,3)
+        
+        figure(year)
+        [Cf,ch] = contourf(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
+            SSH_mat(:,:,ii_SSH)); %this fills in the lower and upper regions
+        hold on
+        [Cf,ch] = contourf(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
+            SSH_mat(:,:,ii_SSH),cntr_plot);
+        clim = get(gca,'clim');
+        hold on
+        [C,h] = contour(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
+            SSH_mat(:,:,ii_SSH),cntr,'w','linewidth',2);
+        clabel(C,h,'color','w')
+        set(h,'levellist',cntr)
+        set(gca,'clim',clim)
+        C(:,C(1,:)<20) = [];
+        
+        if ii_SSH==32 && j==1
+            % set(gca,'edgecolor','none')
+            set(gca,'ydir','normal','fontsize',15)
+            colorbar
+            set(gca,'fontsize',25)
+            set(gcf,'color','w','position',[1 215 1439 587],'NumberTitle','off','Name',num2str(year))
+            monthname = month(SSH_data.time(ii_SSH),'name');
+            yearname = num2str(year);
+            dayname = num2str(day(SSH_data.time(ii_SSH)));
+            title(sprintf('Sea Surface Height Anomaly %s %s, %s [m]',monthname{1},dayname,yearname),'interpreter','latex')
+            format_fig
+            update_figure_paper_size()
+            print(sprintf('imgs/ssh_cntr_%d',year),'-dpdf')
+        end
+        
+        Vq = interp2(SSH_data.lon(patch_lon_SSH),SSH_data.lat(patch_lat_SSH),...
+            SSH_mat(:,:,ii_SSH),C(1,:),C(2,:));
+        for i = 1:length(cntr)
+            %         bM = regionprops(meanSSH>=cntr(i),'Perimeter');
+            %         cntr_length(i,j) = bM.Perimeter;
+            inds = find(abs(Vq-cntr(i))<1e-10);
+            for k = 1:length(inds)-1
+                delta = norm(C(:,inds(k+1))-C(:,inds(k)));
+                if delta < 0.25
+                    d(i,j) = d(i,j) + delta;
+                end
             end
         end
     end
-
-        load(sprintf('AbBbCb_terms_%d_%sfilt_%s%s_box%d_%d',L/1000,con_str,fft_str,filter_type,box_num,year))
-
-      SSHF_mean = nanmean(nanmean(sshf_patch(opt_patch_lon,opt_patch_lat,1)));
-    SLHF_mean = nanmean(nanmean(slhf_patch(opt_patch_lon,opt_patch_lat,1)));
+    %     load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year),'sshf_patch','slhf_patch')
+    load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(j)),...
+        'sshf_patch','slhf_patch');
     
-HF(j) =   SSHF_mean+  SLHF_mean;
+    SSHF_mean = nanmean(nanmean(nanmean(sshf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:),3)));
+    SLHF_mean = nanmean(nanmean(nanmean(slhf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:),3)));
+    
+    HF(j) =   SSHF_mean+  SLHF_mean;
     %{
         inds = C(1,:)<20;
         C(:,inds) = [];
         plot(C(1,:),C(2,:),'mo')
         
         
-        %}
-%     d = 0;
-%     for i = 1121:1454
-%         d = d + norm(C(:,i+1)-C(:,i));
-%     end
-%         d2 = 0;
-%     for i = 1098:1119
-%         d2 = d2 + norm(C(:,i+1)-C(:,i));
-%     end
-%         d3 = 0;
-%     for i = 1456:1543
-%         d3 = d3 + norm(C(:,i+1)-C(:,i));
-%     end
+    %}
+    
     
     %     update_figure_paper_size()
     %     print(sprintf('imgs/ssh_%d',year),'-dpdf')
-    
 end
-d
-figure
-for i = 1:size(d,2)
-    plot(cntr, d(:,i),'o-','linewidth',2,'displayname',num2str(year_vec(i)))
-    hold on
+
+d = d/size(SSH_mat,3);
+
+save(sprintf('SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
+
+%%
+%{
+year_vec = [2003:2018];
+box_num = 3;
+load(sprintf('SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
+%}
+
+function [] = format_fig()
+
+x_tick = get(gca,'xtick');
+x_tick_plot = cell(1,length(x_tick));
+for i = 1:length(x_tick)
+    x_tick_plot(i) = {sprintf('$$%d^{\\circ}$$',x_tick(i))};
 end
-legend('-dynamiclegend')
-xlabel('contour height')
-ylabel('distance [deg]')
-set(gca,'fontsize',25,'xtick',cntr)
-set(gcf,'color','w','position',[1 215 1439 587])
-
-figure
-
-plot(d(3,:),HF)
-
-
-
-
-update_figure_paper_size()
-print(sprintf('imgs/ssh_length_%d',year),'-dpdf')
-    
+y_tick = get(gca,'ytick');
+y_tick_plot = cell(1,length(y_tick));
+for i = 1:length(y_tick)
+    y_tick_plot(i) = {sprintf('$$%d^{\\circ}$$',y_tick(i))};
+end
+set(gca,'ydir','normal','fontsize',25,...
+    'xtick',x_tick,'XTickLabel',x_tick_plot,...
+    'ytick',y_tick,'YTickLabel',y_tick_plot,...
+    'TickLabelInterpreter','latex')
+xlabel('longitude','interpreter','latex')
+ylabel('latitude','interpreter','latex')
+end

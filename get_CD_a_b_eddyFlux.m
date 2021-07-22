@@ -8,10 +8,11 @@ FFINAL = zeros(length(abCD0),1);
 
 cc = zeros(2,length(year_vec));
 rms_er = zeros(2,length(year_vec));
+mean_rms = zeros(length(year_vec),1);
 
 for i = 1:length(year_vec)
     
-    if calc_CD_alpha_flag
+    if calc_alpha_beta_CD_flag
         
         [abCD,FFINAL] = fmincon(@(abCd) optimize_alpha_beta_CD(abCd,year_vec(i),lat_patch_2_box_TF,lon_patch_2_box_TF,L,filter_type,box_num,model_str),abCD0,[],[],[],[],LB,UB,[],options);
         
@@ -25,11 +26,9 @@ for i = 1:length(year_vec)
         year = year_vec(i);
         
         filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
-                
-        t_range = 1:size(sshf_patch,3);
-        
         load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%s_%d',con_str,filter_type,L/1000,box_num,model_str,year_vec(i)),'abCD','FFINAL','box_opt');
         
+        abCD = abCD.*abCD_factor;
         
         switch model_str
             case 'alpha'
@@ -55,29 +54,37 @@ for i = 1:length(year_vec)
                 sshf_model = CD.*(1+a.*SST_prime).*(U_bar+b.*SST_prime).*abs_multiplier;
                 slhf_model = CD.*(1+a.*SST_prime).*(U_bar+b.*SST_prime).*abL_multiplier;
         end
-        
         mean_model_sshf = nanmean(sshf_model,3)';
         mean_model_slhf = nanmean(slhf_model,3)';
         
-        sshf_ERA5_box = sshf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,t_range);
-        slhf_ERA5_box = slhf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,t_range);
+        sshf_ERA5_box = sshf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:);
+        slhf_ERA5_box = slhf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:);
         
         mean_sshf_ERA5_box = nanmean(sshf_ERA5_box,3)';
         mean_slhf_ERA5_box = nanmean(slhf_ERA5_box,3)';
         
         figure(year)
         cmp_ERA5_model_eddyFlux;
-        %             [cc(1,i),cc(2,i),rms_er(1,i),rms_er(2,i),rel_er_sshf,rel_er_slhf] = cmp_ERA5_model_corr(...
-        %                 sshf_model_opt,slhf_model_opt,ERA5_sshf,ERA5_slhf);
-        
+     
         
     end
+%     if plot_model_ERA_rms_err_flag
+%         plot_rms_error_model_ERA5;
+%     end
     
     
 end
 
-
-
+% if plot_model_ERA_rms_err_flag
+% %     if abs(abCD_factor-1)<1e-10
+% %         print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+% %     else
+% %         print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+% %     end
+%     figure(ii_model_str)
+%     plot(year_vec,mean_rms,'o-')
+%     title(model_str_cell{ii_model_str})
+% end
 
 % if plot_model_ERA_err_flag
 %     figure(2)

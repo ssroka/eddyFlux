@@ -1,7 +1,6 @@
 
 salinity = 34*ones(m,n);% ppt for Lv calculation
 
-
 for i = 1:length(year_vec)
     year = year_vec(i);
     dataFile = sprintf('%sERA5_patch_data_%d.mat',data_src,year);
@@ -17,6 +16,9 @@ for i = 1:length(year_vec)
     
     switch model_str
         case 'alpha'
+            
+            abCD = abCD.*abCD_factor;
+            
             a = abCD(1);
             CD =  abCD(2);
             
@@ -125,7 +127,10 @@ for i = 1:length(year_vec)
                 
                 count = count + 1;
             end
-            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year),...
+            
+          
+
+            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d%s',L/1000,con_str,fft_str,filter_type,box_num,model_str,year,abCD_fac_str),...
                 'A','B','C1','C2','C3','D','E1','E2','slhf_patch_bar','sshf_patch_bar','SST',...
                 'dh_CTRL','dh_prime','adh_CTRL','adh_prime','U_CTRL','U_prime','To_prime','qs_prime',...
                 'dx','cf','debug_flag','lat_box','lon_box','a','CD')
@@ -133,6 +138,8 @@ for i = 1:length(year_vec)
             
             
         case 'beta'
+            
+            abCD = abCD.*abCD_factor;
             
             b = abCD(1);
             CD = abCD(2);
@@ -218,8 +225,8 @@ for i = 1:length(year_vec)
                 end
                 
                 
-                dh_bar(:,:,count) = CD_h_diff_bar_tt;
-                dh_prime(:,:,count) = CD_h_diff_prime_tt;
+                dh_bar(:,:,count) = CD_h_diff_bar_tt./CD;
+                dh_prime(:,:,count) = CD_h_diff_prime_tt./CD;
                 U_bar(:,:,count) = U_bar_tt;
                 U_prime(:,:,count) = U_prime_tt;
                 To_prime(:,:,count) = SST_prime_tt;
@@ -229,7 +236,7 @@ for i = 1:length(year_vec)
                 
                 count = count + 1;
             end
-            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year),...
+            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d%s',L/1000,con_str,fft_str,filter_type,box_num,model_str,year,abCD_fac_str),...
                 'Ab','Bb','Cb','Db','slhf_patch_bar','sshf_patch_bar','SST',...
                 'dh_bar','dh_prime','U_bar','U_prime','To_prime','Dq_prime',...
                 'dx','cf','debug_flag','lat_box','lon_box','b','CD')
@@ -238,11 +245,11 @@ for i = 1:length(year_vec)
             
         case 'alphabeta'
             
+            abCD = abCD.*abCD_factor;
+            
             a = abCD(1);
             b = abCD(2);
             CD = abCD(3);
-            
-            
             
             Aab = ZEROS;
             Bab = ZEROS;
@@ -288,7 +295,7 @@ for i = 1:length(year_vec)
                 Lv = SW_LatentHeat(SST_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,tt),'K',salinity,'ppt');
                 
                 % h
-                CD_h_diff = CD*(bs_multiplier(:,:,tt) + bL_multiplier(:,:,tt));
+                CD_h_diff = CD*(abs_multiplier(:,:,tt) + abL_multiplier(:,:,tt));
                 %             CD_h_diff = rho_a*CD.*Lv.*Dq +...
                 %                 rho_a*CD.*c_p_air.*(DT_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,tt));
                 [CD_h_diff_bar_tt,CD_h_diff_prime_tt] = FFT2D_filter(CD_h_diff,dx,cf,debug_flag,lat_box,lon_box);
@@ -339,8 +346,8 @@ for i = 1:length(year_vec)
                 end
                 
                 
-                dh_bar(:,:,count) = CD_h_diff_bar_tt;
-                dh_prime(:,:,count) = CD_h_diff_prime_tt;
+                dh_bar(:,:,count) = CD_h_diff_bar_tt./CD;
+                dh_prime(:,:,count) = CD_h_diff_prime_tt./CD;
                 U_bar(:,:,count) = U_bar_tt;
                 U_prime(:,:,count) = U_prime_tt;
                 To_prime(:,:,count) = SST_prime_tt;
@@ -350,7 +357,7 @@ for i = 1:length(year_vec)
                 
                 count = count + 1;
             end
-            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year),...
+            save(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d%s',L/1000,con_str,fft_str,filter_type,box_num,model_str,year,abCD_fac_str),...
                 'Aab','Bab','C1ab','C2ab','D1ab','D2ab','E1ab','E2ab',...
                 'slhf_patch_bar','sshf_patch_bar','SST',...
                 'dh_bar','dh_prime','U_bar','U_prime','To_prime','Dq_prime',...
