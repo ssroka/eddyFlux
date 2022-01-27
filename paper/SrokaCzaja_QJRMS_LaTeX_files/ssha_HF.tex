@@ -1,0 +1,35 @@
+
+This analysis uses the length of the sea surface height anomaly contours as a proxy for the amount of eddy activity in a given winter. As shown in \citet{qiu2005variability} and \citet{qiu2020reset}, the sea surface height anomaly (SSHA) contours indicate the Kuroshio's path. \citet{qiu2020reset} labels the Kuroshio's path for all years from 1992 through 2019 as either stable, when there was very little change in the contours' locations, or unstable, when there were large fluctuations in the SSHA contours throughout the year. In unstable years, the contours' large fluctuations result in a longer average length and much more curvature compared to those from stable years, as seen in figure 2 of \citet{qiu2020reset}. Years where the trajectories of the contours are more dynamic are also associated with increased eddy activity, as the scale and locations of the mesoscale SST anomalies are reflected in the curvature of the SSHA contours. The SSHA data used in this analysis is from the E.U. Copernicus Marine Service Information \citep{SSHA_data,SSHA_data_doc}. \par 
+
+
+The results of a correlation analysis do not suggest that increased eddy activity through the rectified effect discussed in section \ref{Sec:intro} leads to a greater winter time mean heat flux in the reanalysis data. A representative contour plot of SSHA is shown in figure \ref{fig:ssha_HF}a. The 0.4\,m contour, highlighted in white in figure \ref{fig:ssha_HF}a, was chosen for its proximity to the largest SST gradient, which indicates the main path of the Kuroshio. Figure \ref{fig:ssha_HF}b shows a scatterplot of the winter time mean turbulent heat flux as a function of the length of the 0.4\,m contour. The length of the contour level was calculated at daily intervals and then averaged over each DJFM winter. The time mean heat flux for each winter in the region is computed from the reanalysis sensible and latent surface heat flux fields.  As expected, the length of the 0.4\,m contour in unstable years (blue crosses) are nearly all longer than those of stable years (red crosses). The Pearson correlation coefficients between the contour length and the winter time mean heat fluxes for the stable years, unstable years, and all years are -0.33, -0.11, and -0.18, respectively. The correlation coefficients are all slightly negative, which is reflected in the linear fits shown in figure \ref{fig:ssha_HF}b, but none are found to be statistically significant. Though not statistically significant, a negative correlation would suggest that an increase in eddy activity decreases the heat flux rather than enhances it, as the rectified effect hypothesis would predict \citep{ma2016western,ma2017revised}. To investigate this result, two simple models of turbulent heat flux are constructed to isolate the eddy contribution in the reanalysis data. 
+
+% p values for 
+% red: 0.35
+% blue: 0.83
+% black: 0.49
+
+
+
+\begin{figure}[tb]
+\begin{tikzpicture}
+    \draw (0, 0) node[inner sep=0] {\includegraphics[width=0.5\textwidth]{imgs/ssh_cntr_2003.pdf}};
+    \draw (2.3,1.5) node[fill=white] {\scriptsize a)};
+\end{tikzpicture}
+\begin{tikzpicture}
+    \draw (0, 0) node[inner sep=0] {\includegraphics[width=0.5\textwidth]{imgs/ssh_length_vs_HF_box3_beta_2003_2018_5_redblue.pdf}};
+    \draw (2.7,1.5) node {\scriptsize b)};
+\end{tikzpicture}
+\caption{a) Sea surface height anomaly in units of meters. b) Scatterplot of the average winter time mean turbulent heat flux of the region shown in a) as a function of the length of the 0.4\,m contour in the same region. The slopes of the linear fits (m) for the stable (red), unstable (blue), and all (black) years are indicated in the legend. \label{fig:ssha_HF}}
+   
+\end{figure}
+
+
+
+
+
+
+
+
+
+

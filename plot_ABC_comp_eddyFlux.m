@@ -85,7 +85,32 @@ for i = 1:length(year_vec)
             
             set(gcf,'color','w','position',[61 221 1359 581])
             update_figure_paper_size()
-            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_comp_L_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('%simgs/ABC_comp_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            
+            %--------------------
+            
+            
+            ax = figure(2);
+            [~,h] = contourf(lon_box,lat_box,nanmean(U_bar,3)');
+            title(sprintf('$\\langle\\overline{U}\\rangle$ [m/s], DJFM %d',year),'interpreter','latex')
+            format_fig(h,ax)
+%             th = text(0.02,0.07,'a)','units','normalized');
+%             set(th,'units','normalized','fontsize',20,'backgroundcolor','w')
+            set(gcf,'color','w','position',[1     1   720   365])
+            update_figure_paper_size()
+            print(sprintf('%simgs/ABC_comp_U_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            
+            ax = figure(3);
+            cntr_lvls = linspace(min(nanmean(To_prime,3),[],'all'),max(nanmean(To_prime,3),[],'all'),30);
+            [~,h] = contourf(lon_box,lat_box,nanmean(To_prime,3)',cntr_lvls);
+            title(sprintf('$\\langle T_o'' \\rangle$ [K], DJFM %d',year),'interpreter','latex')
+            format_fig(h,ax)
+%             th = text(0.02,0.07,'b)','units','normalized');
+%             set(th,'units','normalized','fontsize',20,'backgroundcolor','w')
+            set(gcf,'color','w','position',[1     1   720   365])
+            update_figure_paper_size()
+            print(sprintf('%simgs/ABC_comp_To_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            
             
         case 'alphabeta'
             
@@ -132,12 +157,31 @@ end
 
 
 function [] = format_fig(h,plt_num,max_val,min_val)
-
 set(h,'edgecolor','none')
 set(gca,'ydir','normal','fontsize',15)
 colorbar
-xlabel('deg')
-ylabel('deg')
+x_tick = get(gca,'xtick');
+x_tick_plot = cell(1,length(x_tick));
+for i = 1:length(x_tick)
+    x_tick_plot(i) = {sprintf('$$%d^{\\circ}$$',x_tick(i))};
+end
+y_tick = get(gca,'ytick');
+y_tick_plot = cell(1,length(y_tick));
+for i = 1:length(y_tick)
+    y_tick_plot(i) = {sprintf('$$%d^{\\circ}$$',y_tick(i))};
+end
+set(gca,'ydir','normal','fontsize',15,...
+    'xtick',x_tick,'XTickLabel',x_tick_plot,...
+    'ytick',y_tick,'YTickLabel',y_tick_plot,...
+    'TickLabelInterpreter','latex')
+xlabel('longitude','interpreter','latex')
+ylabel('latitude','interpreter','latex')
+
+% set(h,'edgecolor','none')
+% set(gca,'ydir','normal','fontsize',15)
+% colorbar
+% xlabel('deg')
+% ylabel('deg')
 
 if nargin>2 % red white and blue colormap
     colormap(gca,rwb_map([max_val 0 min_val],100))

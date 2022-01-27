@@ -20,7 +20,7 @@ c_entries = round(linspace(1,size(c_map,1),length(year_vec)));
 % clr_map = c_map(c_entries,:); %153 184 296
 clr_map = sprintf('%s','r'*ones(1,length(year_vec)));
 clr_map(ismember(year_vec,year_vec_plt_blue)) = 'b';
-for j = 1
+for j = 2
     rms_er = zeros(length(abCD_fac_vec),length(year_vec));
     model_str = model_str_cell{j};
     for i = 1:length(abCD_fac_vec)
@@ -68,7 +68,7 @@ for j = 1
     end
     h(2) = plot(abCD_mat(1,:),rms_er(abCD_fac_vec_1_id,:),'ko','markerfacecolor','k','linewidth',2,'displayname',sprintf('RMSE at optimal %s',disp_name_str{1}));
     legend([h(2)],'interpreter','latex')
-      xlabel(sprintf('%s %s %s',disp_name_str{1},model_units{j}),'interpreter','latex')
+    xlabel(sprintf('$\\gamma$ %s %s %s',disp_name_str{1},model_units{j}),'interpreter','latex')
     ylabel('RMSE  $$[$$ Wm$$^{-2}]$$','interpreter','latex')
     set(gca,'fontsize',30)
     set(gcf,'color','w')
@@ -91,7 +91,7 @@ for j = 1
         end
         h(4) = plot(abCD_mat(2,:),rms_er(abCD_fac_vec_1_id,:),'ko','markerfacecolor','k','linewidth',2,'displayname',sprintf('RMSE at optimal %s',disp_name_str{2}));
         legend([h(4)],'interpreter','latex')
-        xlabel(sprintf('%s %s %s',disp_name_str{2},model_units{j+1}),'interpreter','latex')
+        xlabel(sprintf('$\\gamma$ %s %s %s',disp_name_str{2},model_units{j+1}),'interpreter','latex')
         ylabel('RMSE  $$[$$ Wm$$^{-2}]$$','interpreter','latex')
         set(gca,'fontsize',30)
         set(gcf,'color','w')

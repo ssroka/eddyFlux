@@ -23,6 +23,12 @@ for i = 1:length(year_vec)
     end
     if plot_model_ERA_err_flag
         
+        if i == 1
+            plot_letters = 'abc';
+        else
+            plot_letters = 'def';
+        end
+        
         year = year_vec(i);
         
         filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
@@ -63,7 +69,7 @@ for i = 1:length(year_vec)
         mean_sshf_ERA5_box = nanmean(sshf_ERA5_box,3)';
         mean_slhf_ERA5_box = nanmean(slhf_ERA5_box,3)';
         
-        figure(year)
+%         figure(year)
         cmp_ERA5_model_eddyFlux;
      
         

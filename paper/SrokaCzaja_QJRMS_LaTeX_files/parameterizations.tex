@@ -1,0 +1,118 @@
+\subsection{The $\beta$-model}
+The first model, the $\beta$-model, solely accounts for the observations by \citet{Chelton2004} and \citet{ONeill2010} that perturbations of surface wind speed and sea surface temperature are positively correlated on the oceanic mesoscale. If $\beta$ is the coupling coefficient measuring the strength of this relation, we write $U' = \beta T'_o$ where $U'$ is the perturbation wind speed, $T'_o$ is the high-pass filtered SST from the reanalysis data, and $\beta >0$ is a constant. Accordingly, our first model is:
+\begin{align}
+    Q^\beta  = \rho_a C_D (\overline{U} + \beta T_o')\Delta h\label{eq:beta_model}
+\end{align}
+where $Q^\beta$ is the sum of the surface sensible heat flux and surface latent heat flux, $C_D$ is a constant exchange coefficient, $\rho_a$ is the density of air, and $\overline{U}$ is low-pass filtered magnitude of the horizontal surface wind vector $\left\lVert (u,v) \right\rVert$. The moist enthalpy potential  $\Delta h$ is $c_p (T_o-T_a)+L_v(q_o^*-q_a)$, where $c_p$ is the specific heat of air, $T_o$ is the sea surface temperature, $L_v$ is the latent heat of vaporization, $q_o^*$ is the saturation specific humidity at $T_o$, and $q_a$ is the specific humidity at $T_a$ and $T_d$.\par 
+
+% c_p is assumed to be 1000 J/kg/K
+% rho_a is assumed to be 1.2
+
+An interior-point optimization scheme is used to solve for the exchange coefficient $C_D$ and the eddy coupling coefficient $\beta$. The optimization is performed separately for each DJFM winter, yielding wintertime timeseries for the parameters $C_D$ and $\beta$. Specifically, we minimise the magnitude of the objective function $J$:
+\begin{align}
+J([\beta, C_D]) = 
+Q^{ERA5}(x,y,t) - Q^\beta(x,y,t;[\beta,C_D]),
+\end{align}
+where $Q^{ERA5}(x,y,t)$ is the sum of the surface sensible and latent heat flux fields from the reanalysis data. Analogous objective functions are used for subsequent models. The mean and standard deviation of $\beta$ across all winters is found to be 0.25$\pm$0.03\,ms$^{-1}$K$^{-1}$. The values of the exchange coefficient $C_D$ are very consistent between winters, with a mean and standard deviation of (1.4$\pm$0.01)$\times10^{-3}$. \par 
+
+The simple $\beta$-model is successful at representing the winter time mean (denoted with angle brackets $\langle\bullet\rangle$) turbulent heat flux as shown in figure \ref{fig:cmp_ERA5_beta_2003_2007}, especially in the center of the selected domain where the heat flux is largest. The results are only shown here for two distinct winters, 2003 in the top row and 2007 in the bottom row, but are consistent across all years. These two years are excellent examples of when the path of the Kuroshio did not change much (2003), and when the path exhibited many large fluctuations (2007), throughout the year. Consistent with figure 1, the larger turbulent cooling of the ocean in 2003 is associated with a meridionally narrower structure and less meandering of the Kuroshio than in 2007 (note the different colorscale in figure 2 between the upper and lower panels). Note that the errors are less than 10 \% over most of the domain, except in the northeastern and southwestern corners where they reach about 20 \%. \par 
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=\textwidth]{imgs/cmp_model_ERA5_250_fft_box3_beta_2007.pdf}
+    \caption{The time mean turbulent heat flux from ERA5 (left), the time-averaged turbulent heat flux from the $\beta$-model (center), and the point-wise relative error between the first two fields (right) for the winters of 2003 (top) and 2007 (bottom). Heat fluxes are expressed in Wm$^{-2}$. \label{fig:cmp_ERA5_beta_2003_2007} }
+\end{figure}
+
+
+To study the sensitivity of the model's results to changes in the $\beta$ parameter, the root-mean-squared-error (RMSE) is calculated between the time mean heat flux from ERA5 and the time mean heat flux from the model using a scaled value for $\beta$. For each year the RMSE is
+
+\begin{align}
+    RMSE = \sqrt{\frac{1}{N}\sum_{i=1}^N\langle\left(Q^{ERA5}\rangle^i-\langle Q^\beta(\gamma\beta) \rangle^i\right)^2 }
+\end{align}
+
+where $N$ is the total number of spatial points in the region of interest (the model is evaluated on the ERA5 grid, which recall has a resolution of $0.25^{\circ}$) and the scaling parameter $\gamma$ varies from -10 to 10. The RMSEs between the reanalysis and the model as a function of the scaled $\beta$ are shown in figure \ref{fig:RMSE_beta} with open circles, and each curve corresponds to a separate year. The RMSE of the unscaled model ($\gamma$=1) is shown with a filled black circle for each year. For these sensitivity tests, $C_D$ is held at its optimised value for each winter, although as previously mentioned the variance in $C_D$ among winters is quite small.\par 
+These results show a clear optimality near a value of $\beta = +0.25$. This is very near the value quoted by \citet{ONeill2010} of $+0.3$ (see their figure 3a), which is particularly encouraging. The years where the Kuroshio is considered stable and unstable are again shown in red and blue, respectively. There is no clear relationship between the RMSE and the stability, reinforcing the conclusion from section \ref{Sec:Corr} that there is little connection between the wintertime turbulent air-sea heat flux and the level of mesoscale eddy activity over the Kuroshio in the ERA5 dataset. \par 
+
+
+To address this issue more quantitatively, we now use the $\beta$-model to compute the contribution of the mesoscale SST anomalies to the spatially averaged (low-pass filtered) surface turbulent heat flux. Following the notation in section \ref{Sec:DataMethods}, we write:
+\begin{align}
+\nonumber\begin{split}
+     \overline{Q^\beta}  =& \overline{\rho_a C_D (\overline{U} + \beta T_o')(\overline{\Delta h} + \Delta h')}\\
+     =&\overline{\rho_a C_D \left( \overline{U}\hspace*{1mm} \overline{\Delta h} +  \overline{U}\Delta h'+\beta T_o'\overline{\Delta h}+\beta T_o'\Delta h'\right)}
+\end{split}\\
+  =&\underbrace{\overline{\rho_a C_D \overline{U}\hspace*{1mm} \overline{\Delta h}}}_{\overline{Q^\beta}_1} +\underbrace{\overline{\rho_a C_D \overline{U}\Delta h'}}_{\overline{Q^\beta}_2}+\underbrace{\overline{\rho_a C_D\beta T_o'\overline{\Delta h}}}_{\overline{Q^\beta}_3}+\underbrace{\overline{\rho_a C_D\beta T_o'\Delta h'}}_{\overline{Q^\beta}_4}\label{eq:expand_beta_ABC}.
+\end{align}
+
+
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imgs/rms_error_250_fft_box3_beta_2018_abCDFAC__10_1.pdf}
+    \caption{The root-mean-squared-error (RMSE) between the time mean turbulent heat flux from ERA5 reanalysis data and the $\beta$-model with scaled values of $\beta$. The RMSEs from years when the Kuroshio was stable are connected with red lines and those from unstable years are connected with blue lines. The RMSE using the optimal value of $\beta$ (i.e. $\gamma=1$) is shown with a filled black circle for each year.}
+    \label{fig:RMSE_beta}
+\end{figure}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=\textwidth]{imgs/ABC_L_250_fft_box3_beta_2007_abCDFAC_.pdf}
+    \caption{The winter time mean of the $\beta$-model terms for 2007: the long-time, large spatial scale term $\langle\overline{Q^\beta_1}\rangle$ (a), the persistent temperature anomaly term $\langle\overline{Q^\beta_2}\rangle$ (b), and the two rectified effect terms $\langle\overline{Q^\beta_3}\rangle$ (c) and $\langle\overline{Q^\beta_4}\rangle$ (d). Note the different scales of the colorbar in the different panels.}
+    \label{fig:ABC_2007}
+\end{figure}
+
+Contour plots of the winter time mean for each of the terms in equation \ref{eq:expand_beta_ABC} from 2007, which was an exceptionally unstable year, are shown in figure \ref{fig:ABC_2007}. These results show that the long-time, large-spatial scale term $\langle\overline{Q^\beta_1}\rangle$ is the dominant contributor. The eddy-enhancement terms $\langle\overline{Q^\beta_3}\rangle$ and $\langle\overline{Q^\beta_4}\rangle$ are largest on the west side of the domain where the eddy activity is most pronounced, but the magnitude of the flux from these terms is much smaller than that from $\langle\overline{Q^\beta_1}\rangle$. Recall that $\langle\overline{Q^\beta_2}\rangle$ and $\langle\overline{Q^\beta_3}\rangle$ do not vanish because the spatial frequency content of the product of a low-pass field and a high-pass field includes frequencies below the cutoff. The term $\langle\overline{Q^\beta_4}\rangle$ is the most intuitively connected to the rectified effect as it is proportional to $T'_o \Delta h'$. Figure \ref{fig:ABC_2007} indicates nevertheless that the other term proportional to $\beta$, namely $\langle\overline{Q^\beta_3}\rangle$, is adding to $\langle\overline{Q^\beta_4}\rangle$ with a similar magnitude. As emphasized in section \ref{Sec:DataMethods}, this term arises out of the filtering procedure. Together, their sum represents the total rectified effect of mesoscale eddies on the turbulent heat flux. It is shown in figure \ref{fig:ABC_comp_To_2007}a and is seen to be only about 1\,\% of $\langle\overline{Q^\beta_1}\rangle$.\par
+
+Because the optimised value of $\beta$ for ERA5 is very close to that estimated from satellite observations, we next consider how the small magnitude of $T_o'$ in the ERA5 reanalysis data may be the reason for the small contribution from the eddy terms. The contour plot in figure \ref{fig:ABC_comp_To_2007}b of $\langle T_o'\rangle$ shows the typical distribution and magnitude of the time mean high-pass filtered SST from ERA5. Figure \ref{fig:histogram_Toprime} shows a histogram of the normalized frequency of the time mean high-pass filtered SST from each winter ($\langle T_o' \rangle$) overlaid with a normalized histogram of the 6-hourly high-pass filtered SST from all winters. The maximum and minimum values in the $\langle T_o' \rangle$ distribution are -3.6\,K and 3.0\,K, and in the synoptic distribution are -7.9\,K and 6.2\,K. While there are a few outliers, and the synoptic set has a slightly broader distribution, more than 98\% of the points in the $\langle T_o' \rangle$ distribution and more than 97\% of the points in the synoptic distribution are within $\pm$2\,K. For completeness, we note that the analysis carried out with the time mean $T'_o$ for each winter yields very similar results to that using the full SST field. It is thus the wintertime mean $T'_o$ which contributes most in ERA5 to the rectified effect.\par 
+% blue, winterly 98.88% are within p/m 2K
+% orange, 6-hourly 97.35% are within p/m 2K
+
+The dynamic term of the $\beta$-model in equation \ref{eq:beta_model} is $\rho_a C_D \beta T_o'\Delta h$ and the thermodynamic term is $\rho_a C_D\overline{U}\Delta h$. The ratio of these terms, which is a measure of the turbulent heat flux that is attributable to the mesoscale eddies, is then $\beta T_o'/\overline{U}$. Since $\overline{U}$ is close to 10\,m/s throughout the domain across all years, and the average $\beta$ is 0.25, the ratio of the dynamic term to the thermodynamic term $\beta T_o'/\overline{U}$ is expected to be $< (0.25\times 2)/10 = 5$\%. The time mean of this ratio is shown in figure \ref{fig:ratio_Q_eddy_Q_noeddy} for the winter of 2007, and as expected it generally does not exceed 5\%. In order for the dynamic term to be 10\% of the thermodynamic term in the $\beta$-model, $T_o'$ would need to be at least 4\,K. The small values of $T_o'$ appear to explain the small influence of the eddies from ERA5 compared to those found in other studies of idealized models or satellite observations \citep{foussard2019storm,ma2017revised}. In \citet{ma2017revised} the SST anomalies are approximately 3\,K while in \citet{foussard2019storm} many of the anomalies are nearly 6\,K (as shown in figure 3 of their paper) resulting in turbulent heat fluxes attributable to the mesoscale eddies on the order of 10 Wm$^{-2}$. The smaller anomalies considered here do not seem to provide enough leverage for the mesoscale eddies to exert a large influence on the air-sea heat flux.
+
+
+\begin{figure}[tb]
+\begin{tikzpicture}
+    \draw (0, 0) node[inner sep=0]
+    {\includegraphics[width=0.5\textwidth]{imgs/ABC_dynamic_L_250_fft_box3_beta_2007_abCDFAC_.pdf}};
+    \draw (-2.3,-1) node[fill=white] {\scriptsize a)};
+\end{tikzpicture}
+\begin{tikzpicture}
+    \draw (0, 0) node[inner sep=0] {\includegraphics[width=0.5\textwidth]{imgs/ABC_comp_To_L_250_fft_box3_beta_2007.pdf}};
+    \draw (-2.3,-1) node[fill=white] {\scriptsize b)};
+\end{tikzpicture}
+    \caption{The sum of the rectified effect terms $\langle\overline{Q^\beta_3}+\overline{Q^\beta_4}\rangle$ (a) and the time mean $T_o'$ (b) for the winter of 2007.
+    \label{fig:ABC_comp_To_2007}}
+\end{figure}
+
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imgs/histogram_To_prime_L_250_fft_3_beta.pdf}
+    \caption{The blue histogram shows the normalized frequency of the time mean $\langle T_o'\rangle$ of each winter, while the orange histogram shows the normalized frequency of the 6-hourly $T_o'$ for all winters.}
+    \label{fig:histogram_Toprime}
+\end{figure}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imgs/ABC_ratio_L_250_fft_box3_beta_2007_abCDFAC_.pdf}
+    \caption{The ratio of the time mean of the dynamic term $\langle \beta T_o' \Delta h \rangle$ to the time mean of the thermodynamic term $\langle \overline{U} \Delta h\rangle $ of the $\beta$-model for the winter of 2007.}
+    \label{fig:ratio_Q_eddy_Q_noeddy}
+\end{figure}
+
+
+
+\subsection{The $\alpha\beta$-model}
+As mentioned in section \ref{Sec:intro}, it is well documented that the drag coefficient is also affected by $T'_o$. Indeed, the possibility that such effect could be involved in setting the intensity of the western boundary currents themselves had been suggested in earlier studies \citep{behringer1979thermal}. To include this effect, we now include the impact of mesoscale SST anomalies on the drag coefficient (i.e. $C_D = C_D^{(ref)}(1+\alpha T_o')$) where $\alpha$ is a coupling coefficient capturing the effect of $T_o'$ on the exchange coefficient $C_D$. Continuing with equation \ref{eq:beta_model}, we obtain: 
+\begin{align}
+    Q^{\alpha\beta} = \rho_a C_D^{(ref)}(1+\alpha T_o')(\Ub+\beta T_o')\Delta h.
+\end{align}
+In this model the three optimised parameters are: $\beta$ as in the first model, $C_D^{(ref)}$, which is a reference or ``background'' value for the drag coefficient, and the eddy coupling coefficient $\alpha$, which when positive indicates an enhancement of the surface drag over a warm mesoscale eddy. 
+
+This model also shows good agreement with the ERA5 data (see figure S2). The mean and standard deviations of the three model parameters $\alpha$, $\beta$, and $C_D$ across all years are $\alpha = $-3.3$\times10^{-4}$ $\pm$0.01\,K$^{-1}$, $\beta =$ 0.29$\pm$0.09,m\,s$^{-1}$K$^{-1}$, and $C_D^{(ref)} =$ (1.4$\pm$0.01)$\times10^{-3}$. In this model it appears that the $\beta$ term is sufficient to characterize the eddy-enhanced flux, as the optimised $\alpha$ coupling coefficient varies between positive and negative values in different years such that it effectively vanishes in the time mean across 2003-2018. As in the previous model, the long-time, large-spatial scale term dominates the other terms. The ratio of the dynamic terms to the thermodynamic terms in this model is $\left(\overline{U}\alpha \Top+\beta \Top + \alpha\beta \left(\Top\right)^2\right)/\overline{U}$. Using the average values of the model parameters, $\overline{U}$=10\,m/s, and $\Top<$2\,K again, the expected upper bound for this ratio is approximately 5.8\,\%. This bound is very similar to that from the $\beta$-model due to the small time-averaged value of $\alpha$, and the plot of this ratio for the winter of 2007 is shown in figure S4. \par 
+
+
+
+
+
+The two models presented above are successful at representing the air-sea turbulent heat flux from the reanalysis fields and each isolate eddy contribution through different mechanisms using only one or two eddy coupling coefficients. The optimised values for all parameters and all the models, shown in figure S1, are found to be relatively stable from winter-to-winter. Neither the values of the eddy coupling coefficients (figure S1), nor the RMSEs (figures \ref{fig:RMSE_beta} and S3) appear to be sensitive to the degree of stability of the Kuroshio's path over a winter. The RMSEs calculated between the model and the ERA5 fields using the optimal value of the coupling coefficients is less than 20\,Wm$^{-2}$ for all models and all years considered. The goal of the $\alpha\beta$-model was to understand the relative importance of the different eddy coupling coefficients $\alpha$ and $\beta$, and the results suggest that the $\beta$ coefficient alone is able to capture the signal from the eddies. This roughly agrees with the findings reviewed by \citet{SMALL2008274} in which the sea surface drag enhancement of the surface wind stress was a smaller effect than the changes in atmospheric stability from the warm and cold eddies which drive near-surface winds. \par 
+
+
+

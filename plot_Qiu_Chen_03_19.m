@@ -1,24 +1,40 @@
-% clear;clc;close all
+clear;clc;close all
 
-% year_vec = [2003:2018];
+year_vec = [2003:2018];
 
 % data_src = '/Users/ssroka/MIT/Research/eddyFlux/ERA5_data/';
-% 
-% addpath('/Users/ssroka/MIT/Research/eddyFlux/filter')
-% addpath('/Users/ssroka/MIT/Research/eddyFlux/get_CD_alpha')
-% addpath('/Users/ssroka/Documents/MATLAB/util/')
-% addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
+data_src = '/Volumes/SydneySroka_Remy/eddyFlux/ERA5_data/';
+
+addpath('/Volumes/SydneySroka_Remy/eddyFlux/filter')
+addpath('/Volumes/SydneySroka_Remy/eddyFlux/get_CD_alpha')
+addpath('/Users/ssroka/Documents/MATLAB/util/')
+addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
 
 %% filter set up
-% load('env_const.mat')
-% 
-% load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
-%     'SST_patch','lat','lon','patch_lat','patch_lon',...
-%     'slhf_patch','sshf_patch');
-% L = 250000;
-% box_num = 3;
-% filter_type = 'fft';
-% model_str = 'alpha'; % shouldn't matter, not a filter prop
+load('env_const.mat')
+
+load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
+    'SST_patch','lat','lon','patch_lat','patch_lon',...
+    'slhf_patch','sshf_patch','box_opt');
+L = 250000;
+box_num = 3;
+filter_type = 'fft';
+model_str = 'alpha'; % shouldn't matter, not a filter prop
+
+
+switch box_num
+    case 1
+        box_opt = [36 41.5; 143 152];
+    case 2
+        box_opt = [30 44.5; 148 169];
+    case 3
+        box_opt = [30 41.5; 142.5 169];
+    case 4
+        box_opt = [30 41.5; 142.5 153];
+    case 5
+        box_opt = [30 41.5; 153 169];
+end
+
 for i = 1:length(year_vec)
     year = year_vec(i);
     figure(1)

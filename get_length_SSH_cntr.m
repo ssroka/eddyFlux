@@ -97,7 +97,16 @@ addpath(['/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns'])
 %     box_opt = [30 42; 144 168];
 % box_opt = [30 44.5; 148 169];
 % box_opt = [30 41.5; 142.5 169];
-cntr = [0:0.2:0.8];
+
+% cntr_plot = [0.2:0.1:0.8];
+% cntr = [0:0.1:0.2];
+
+% cntr_plot = [-0.2:0.2:1];
+% cntr = [0.3:0.1:0.7];
+
+
+
+cntr = [0.4 0.4];
 cntr_plot = [-0.2:0.2:1];
 
 %% filter set up
@@ -177,7 +186,7 @@ for j = 1:length(year_vec)
             set(gca,'ydir','normal','fontsize',15)
             colorbar
             set(gca,'fontsize',25)
-            set(gcf,'color','w','position',[1 215 1439 587],'NumberTitle','off','Name',num2str(year))
+            set(gcf,'color','w','position',[1         215        1041         587],'NumberTitle','off','Name',num2str(year))
             monthname = month(SSH_data.time(ii_SSH),'name');
             yearname = num2str(year);
             dayname = num2str(day(SSH_data.time(ii_SSH)));
@@ -195,7 +204,7 @@ for j = 1:length(year_vec)
             inds = find(abs(Vq-cntr(i))<1e-10);
             for k = 1:length(inds)-1
                 delta = norm(C(:,inds(k+1))-C(:,inds(k)));
-                if delta < 0.25
+                if delta < 0.15
                     d(i,j) = d(i,j) + delta;
                 end
             end
@@ -224,7 +233,7 @@ end
 
 d = d/size(SSH_mat,3);
 
-save(sprintf('SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
+save(sprintf('small_SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
 
 %%
 %{

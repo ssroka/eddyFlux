@@ -54,19 +54,19 @@ switch model_str
         for i = 1:num_comp
             
             if i > 1
-                ax(2) = subplot(4,1,2);
+                ax(3) = subplot(4,1,3);
             else
                 continue
             end
             
             h(1) = plot(year_vec,mean_comp(i,:),'-','color',clr_map(i,:),'linewidth',2,'displayname',titles_cell{i});
-            set(gca,'fontsize',15)
+            set(gca,'fontsize',15,'xtick',2003:3:2018)
             hold on
             
             if i > 1
                 set(gca,'ylim',[-0.4 1])
                 title('$\alpha$ model $\left(\overline{Q^\alpha_2}\right)_{\overline{t}}$ through $\left(\overline{Q^\alpha_4}\right)_{\overline{t}}$ [Wm$^{-2}$]','interpreter','latex')
-                lh(2) = legend('-dynamiclegend','interpreter','latex','location','eastoutside');
+                lh(3) = legend('-dynamiclegend','interpreter','latex','location','eastoutside');
             else
                 
                 %                 set(gca,'ylim',[250 300])
@@ -84,7 +84,7 @@ switch model_str
         
         for i = 1:num_comp
             if i > 1
-                ax(3) = subplot(4,1,3);
+                ax(2) = subplot(4,1,2);
             else
                 continue
             end
@@ -92,11 +92,11 @@ switch model_str
             
             h(2) = plot(year_vec,mean_comp(i,:),'-','color',clr_map(i,:),'linewidth',2,'displayname',titles_cell{i});
             
-            set(gca,'fontsize',15)
+            set(gca,'fontsize',15,'xtick',2003:3:2018)
             hold on
             if i > 1
                 set(gca,'ylim',[-0.4 1])
-                lh(3) = legend('-dynamiclegend','interpreter','latex','location','eastoutside');
+                lh(2) = legend('-dynamiclegend','interpreter','latex','location','eastoutside');
                 title('$\beta$ model $\left(\overline{Q^\beta_2}\right)_{\overline{t}}$ through $\left(\overline{Q^\beta_4}\right)_{\overline{t}}$ [Wm$^{-2}$]','interpreter','latex')
                 
             else
@@ -122,7 +122,7 @@ switch model_str
             end
             
             h(3) = plot(year_vec,mean_comp(i,:),'color',clr_map(i,:),'linewidth',2,'displayname',titles_cell{i});
-            set(gca,'fontsize',15)
+            set(gca,'fontsize',15,'xtick',2003:3:2018)
             hold on
             if i > 1
                 set(gca,'ylim',[-0.4 1])

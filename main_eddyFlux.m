@@ -27,13 +27,13 @@ filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 box_num = 3;
 for abCD_fac_vec = [1]
 intvl = 1; % look at every intvl'th ti mpepoint
-model_str = 'alphabeta'; % 'alpha' 'beta' 'alphabeta'
+model_str = 'beta'; % 'alpha' 'beta' 'alphabeta'
 load('env_const.mat'); % load rho_a and c_p_air
 
 debug_flag = false;
 % plot_flag = false;
 calc_alpha_beta_CD_flag = false;
-plot_model_ERA_err_flag = false;
+plot_model_ERA_err_flag = true;
 calc_model_ERA_rms_err_flag = false;
 alpha_pos_flag = false;
 beta_pos_flag = false;
@@ -51,7 +51,8 @@ end
 
 
 if plot_all_alpha_beta_CD || plot_all_ABC_vs_year
-    model_str_cell = {'alpha','beta','alphabeta'};
+%     model_str_cell = {'alpha','beta','alphabeta'};
+    model_str_cell = {'beta','alphabeta'};
 else
     model_str_cell = {model_str};
 end

@@ -1,0 +1,142 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A template for Wiley article submissions.
+% Developed by Overleaf. 
+%
+% Please note that whilst this template provides a 
+% preview of the typeset manuscript for submission, it 
+% will not necessarily be the final publication layout.
+%
+% Usage notes:
+% The "blind" option will make anonymous all author, affiliation, correspondence and funding information.
+% Use "num-refs" option for numerical citation and references style.
+% Use "alpha-refs" option for author-year citation and references style.
+
+\documentclass[alpha-refs]{wiley-article}
+% \documentclass[blind,alpha-refs]{wiley-article}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% JDT:  Annotation Code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\usepackage{ulem}
+
+ % Uncomment to display with annotation; comment out otherwise
+\newcommand{\add}[1]{\textcolor{blue}{#1}}
+\newcommand{\delete}[1]{\textcolor{red}{\sout{#1}}}
+\newcommand{\edit}[2]{\textcolor{red}{\sout{#1}} \textcolor{blue}{#2}}
+\newcommand{\mnote}[1]{\marginpar{\textcolor{green}{\textbf{#1}}}}
+
+\newcommand{\beginsupplement}{%
+\setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{3}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+ % Uncomment to display without annotation; comment out otherwise
+%\newcommand{\add}[1]{#1}
+%\newcommand{\delete}[1]{}
+%\newcommand{\edit}[2]{#2}
+%\newcommand{\mnote}[1]{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Add additional packages here if required
+\usepackage{siunitx}
+
+% Update article type if known
+%\papertype{Original Article}
+% Include section in journal if known, otherwise delete
+%\paperfield{Journal Section}
+
+\title{Wintertime cooling of the Kuroshio: experimenting with simple air-sea interaction models}
+
+% List abbreviations here, if any. Please note that it is preferred that abbreviations be defined at the first instance they appear in the text, rather than creating an abbreviations list.
+%\abbrevs{ABC, a black cat; DEF, doesn't ever fret; GHI, goes home immediately.}
+
+% Include full author names and degrees, when required by the journal.
+% Use the \authfn to add symbols for additional footnotes and present addresses, if any. Usually start with 1 for notes about author contributions; then continuing with 2 etc if any author has a different present address.
+\author[1]{Sydney Sroka}
+\author[2]{Arnaud Czaja}
+
+%\contrib[\authfn{1}]{Equally contributing authors.}
+
+% Include full affiliation details for all authors
+\affil[1]{Department of Mechanical Engineering, Massachusetts Institute of Technology, Cambridge, Massachusetts, 02139, USA}
+\affil[2]{Imperial College, Department of Physics, Prince Consort Road, London SW7 2AZ, United Kingdom}
+
+\corraddress{Sydney Sroka, Department of Mechanical Engineering, Massachusetts Institute of Technology, Cambridge, Massachusetts, 02139, USA}
+\corremail{ssroka@mit.edu}
+
+%\presentadd[\authfn{2}]{Department, Institution, City, State or Province, Postal Code, Country}
+
+\fundinginfo{MIT Office of Graduate Education Fellowship}
+
+% Include the name of the author that should appear in the running header
+\runningauthor{Sroka and Czaja}
+
+%--------preamable--------
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multicol}
+
+% figures
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage[section]{placeins} % keeps floats inside this sections
+
+% document properties format
+
+\usepackage{indentfirst}
+% tables
+\usepackage{booktabs}
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\abovetopsep}{4pt}
+\usepackage{adjustbox}
+\usepackage{multirow}
+% equations
+\usepackage{cancel} % use \cancelto{0}{x} to draw an arrow thru x with a zero
+\usepackage{tikz}
+
+% new commands
+\newcommand{\Vmag}[1]{\| \mathbf{#1}\|}
+% newcommands for this document
+\newcommand{\Ub}{\overline{U}\hspace*{1mm}}
+\newcommand{\Up}{U'}
+\newcommand{\Dhb}{\overline{\Delta h}\hspace*{1mm}}
+\newcommand{\Dhp}{\Delta h'}
+\newcommand{\To}{T_o\hspace*{1mm}}
+\newcommand{\Top}{T_o'}
+\newcommand{\Ta}{T_a\hspace*{1mm}}
+\newcommand{\Tap}{T_a'}
+\newcommand{\qo}{q_o\hspace*{1mm}}
+\newcommand{\qop}{q_o'}
+\newcommand{\qa}{q_a\hspace*{1mm}}
+\newcommand{\qap}{q_a'}
+\newcommand{\CDs}{C_D^s}
+\newcommand{\CDL}{C_D^L}
+\newcommand{\cpa}{c_p^{air}}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{hyperref}
+
+
+\begin{document}
+\thispagestyle{plain}
+\beginsupplement
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{imgs/ABC_ratio_L_250_fft_box3_alphabeta_2007_abCDFAC_.pdf}
+    \caption{The ratio of the time mean of the dynamic terms $\langle \overline{U}\alpha \Top \rangle + \langle \beta \Top \rangle + \langle \alpha\beta \left(\Top\right)^2\rangle$ to the time mean of the thermodynamic term $\langle \overline{U} \rangle$ of the $\alpha\beta$-model for the winter of 2007. }
+    \label{fig:ratio_Q_eddy_Q_noeddy_ab}
+\end{figure}
+\end{document}

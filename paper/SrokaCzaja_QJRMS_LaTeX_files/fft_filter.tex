@@ -1,0 +1,17 @@
+A 2D FFT filter was used to separate the high spatial frequency content from the low spatial frequency content in the field variables from the reanalysis data for each of the models. The filtering scheme used here is similar to the one used in \citet{scott2005direct}. First, a bilinear plane is calculated with a least squares fit to $c_0 + c_1 x+c_2y$, where $c_i$ variables are constants and $x$ and $y$ are the zonal and meridional directions, respectively. This plane is subtracted from the field to spatially de-mean and de-trend the data. Next, a 2D FFT is applied. The cutoff frequency is the radius of a circle centered on the origin of the transformed field, and the low-pass (high-pass) field is recovered by removing all of the frequency content outside (inside) of this circle and then inverting the transform. A filter length scale of 500\,km, or spatial frequency of 0.002\,km$^{-1}$, was used for all field variables to separate the eddy length scales from the large-scales. The filter is applied to each time point before any time-averaging is done. The bilinear plane is added to the low-pass field after the inverse transform step. High-pass fields are denoted with primes $\bullet’$, and low-pass fields are denoted with overbars $\overline{\bullet}$. \par 
+This filtering procedure leads to several important properties of the filtered output. It ensures that the original signal is equal to the sum of its low-pass and high-pass components ($\bullet = \overline{\bullet} + \bullet’$), that low-pass filtering a single high-pass filtered field vanishes ($\overline{\bullet'}  = 0$), and that low-pass filtering a field that was already low-pass filtered does not change the output $\left(\overline{\left(\overline{\bullet}\right)}  = \overline{\bullet}\right)$. However, it is important to note that low-pass filtering the product of a low-pass filtered field and a high-pass filtered field does not guarantee the result vanishes ($\overline{\overline{\bullet}\bullet'}\neq 0$); this can be illustrated with a simple, 1D example. If a signal $s(x)$, where $x$ measures horizontal distance, is the sum of two cosine functions with wavenumbers $k_1$ and $k_2$, and the cutoff wavenumber $k_c$ is such that $k_1 > k_c > k_2$, then
+\begin{equation}
+s(x) = \cos(k_1x)+\cos(k_2x)
+\end{equation}
+After applying the spectral filter described above, we obtain:
+\begin{equation}
+\overline{s}(x) = \cos(k_2x) \; \mbox{ and } s'(x) = \cos(k_1x),    
+\end{equation}
+and as a result:
+\begin{equation}
+\overline{s}(x)s'(x) = \cos(k_2x) \cos(k_1x) = \frac{ \cos((k_1+k_2)x) + \cos((k_1-k_2)x) }{2}
+\end{equation}
+
+
+
+Since $k_1+k_2$ is guaranteed to be greater than $k_c$, whether $\overline{\overline{s} s'}$ vanishes depends on whether $\lvert k_1-k_2 \rvert$ is greater than or less than $k_c$. In an atmospheric context, extinguishing $\overline{\overline{s} s'}$ is guaranteed by considering the zonal mean (i.e. $k_c=0$). For the regional reanalysis datasets considered here however, no products of high-passed and low-passed fields are expected to vanish after low-pass filtering due to the broad range of wavenumber content around the eddy scale \citep{scott2005direct,tulloch2011scales}.
