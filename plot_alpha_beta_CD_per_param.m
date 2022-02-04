@@ -11,7 +11,7 @@ abCD_vec = zeros(length(abCD0),length(year_vec));
 
 for i = 1:length(year_vec)
     year = year_vec(i);
-    load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%s_%d',con_str,filter_type,L/1000,box_num,model_str,year_vec(i)),'abCD');
+    load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,year_vec(i)),'abCD');
     abCD_vec(:,i) = abCD;
 end
 
@@ -108,8 +108,8 @@ for i = 1:3
         if i==3
             rearrange_figure(h,lh,'3x1_1_legend')
             update_figure_paper_size()
-            print(sprintf('imgs/abCD_vs_year_L_%d_%s_%d_%s',...
-                L/1000,filter_type,box_num,'per_param_abCD'),'-dpdf')
+            print(sprintf('imgs/abCD_vs_year_L_%d_%s_%d_%d_%s',...
+                L/1000,filter_type,box_num,er_box_num,'per_param_abCD'),'-dpdf')
             
         end
     end

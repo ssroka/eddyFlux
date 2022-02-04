@@ -13,7 +13,7 @@ mean_comp = zeros(num_comp,length(year_vec));
 
 for i = 1:length(year_vec)
     year = year_vec(i);
-    load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year))
+    load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,er_box_num,model_str,year))
     switch model_str
         case 'alpha'
             mean_comp(1,i) = sum(sum(nanmean(A,3)));
@@ -142,7 +142,7 @@ switch model_str
         %         title('$\alpha \beta$ model','interpreter','latex')
         %         format_fig(h,ax)
         update_figure_paper_size()
-        print(sprintf('%simgs/ABC_all_years_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+        print(sprintf('%simgs/ABC_all_years_L_%d_%s_box%d_%d_%s_%d',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
         
         
 end

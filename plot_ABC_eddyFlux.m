@@ -2,10 +2,10 @@
 letter_vec = 'abcd';
 for i = 1:length(year_vec)
     year = year_vec(i);
-    load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%s_%d',con_str,filter_type,L/1000,box_num,model_str,year_vec(i)),'abCD');
+    load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,year_vec(i)),'abCD');
     dataFile = sprintf('%sERA5_patch_data_%d.mat',data_src,year);
     load(dataFile,'qo_patch','qa_patch','SST_patch','DT_patch')
-    load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d%s',L/1000,con_str,fft_str,filter_type,box_num,model_str,year,abCD_fac_str))
+    load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%d_%s_%d%s',L/1000,con_str,fft_str,filter_type,box_num,er_box_num,model_str,year,abCD_fac_str))
     %             load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year))
     
     switch model_str
@@ -183,7 +183,7 @@ for i = 1:length(year_vec)
     end
     set(gcf,'color','w','position',[61 221 1359 581])
     update_figure_paper_size()
-    print(sprintf('%simgs/ABC_L_%d_%s_box%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,model_str,year,abCD_fac_str),'-dpdf')
+    print(sprintf('%simgs/ABC_L_%d_%s_box%d_%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year,abCD_fac_str),'-dpdf')
 end
 
 

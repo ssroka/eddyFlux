@@ -25,6 +25,7 @@ year_vec = [2003 2007];
 L        = 250000; % m
 filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 box_num = 3;
+er_box_num = 3;
 for abCD_fac_vec = [1]
 intvl = 1; % look at every intvl'th ti mpepoint
 model_str = 'beta'; % 'alpha' 'beta' 'alphabeta'
@@ -32,7 +33,7 @@ load('env_const.mat'); % load rho_a and c_p_air
 
 debug_flag = false;
 % plot_flag = false;
-calc_alpha_beta_CD_flag = false;
+calc_alpha_beta_CD_flag = true;
 plot_model_ERA_err_flag = true;
 calc_model_ERA_rms_err_flag = false;
 alpha_pos_flag = false;
@@ -82,6 +83,11 @@ for ii_model_str = 1:length(model_str_cell)
             box_opt = [30 41.5; 142.5 153];
         case 5
             box_opt = [30 41.5; 153 169];
+    end
+    
+    switch er_box_num
+        case 3
+            er_box = [35.75 41.5; 142.5 155.7500];% [30 41.5; 142.5 169];%
     end
     
     if alpha_pos_flag
@@ -135,8 +141,8 @@ for ii_model_str = 1:length(model_str_cell)
     if ~(plot_all_alpha_beta_CD || plot_all_ABC_vs_year || plot_all_QandC || plot_ABC_comp || calc_model_ERA_rms_err_flag)
 %         make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str);
         get_CD_a_b_eddyFlux;
-%         calc_ABC_eddyFlux;
-%         plot_ABC_eddyFlux;
+        calc_ABC_eddyFlux;
+        plot_ABC_eddyFlux;
     else
         if plot_all_alpha_beta_CD
             plot_alpha_beta_CD_per_param

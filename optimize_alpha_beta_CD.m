@@ -1,4 +1,4 @@
-function [mean_er] = optimize_alpha_beta_CD(abCD,year,lat_patch_2_box_TF,lon_patch_2_box_TF,L,filter_type,box_num,model_str)
+function [mean_er] = optimize_alpha_beta_CD(abCD,year,lat_patch_2_box_TF,lon_patch_2_box_TF,lat_box_2_er_TF,lon_box_2_er_TF,L,filter_type,box_num,er_box_num,model_str)
 %{
 
 
@@ -35,7 +35,7 @@ end
 er = (sshf_model - sshf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:)).^2+...
     + (slhf_model - slhf_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:)).^2;
 
-mean_er = sqrt(nanmean(nanmean(nanmean(er))));
+mean_er = sqrt(nanmean(nanmean(nanmean(er(lon_box_2_er_TF,lat_box_2_er_TF,:)))));
 
 
 end

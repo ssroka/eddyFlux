@@ -8,7 +8,7 @@ for i = 1:length(year_vec)
     
     switch model_str
         case 'alpha'
-            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year))
+            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,er_box_num,model_str,year))
                
             figure(1)
             ax = subplot(2,3,1);
@@ -43,13 +43,13 @@ for i = 1:length(year_vec)
             
             set(gcf,'color','w','position',[61 221 1359 581])
             update_figure_paper_size()
-            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_comp_L_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_comp_L_%d_%s_box%d_%d_%s_%d',L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
             
             
         case 'beta'
             
             
-            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year))
+            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,er_box_num,model_str,year))
             
              
             figure(1)
@@ -85,7 +85,7 @@ for i = 1:length(year_vec)
             
             set(gcf,'color','w','position',[61 221 1359 581])
             update_figure_paper_size()
-            print(sprintf('%simgs/ABC_comp_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('%simgs/ABC_comp_L_%d_%s_box%d_%d_%s_%d',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
             
             %--------------------
             
@@ -98,7 +98,7 @@ for i = 1:length(year_vec)
 %             set(th,'units','normalized','fontsize',20,'backgroundcolor','w')
             set(gcf,'color','w','position',[1     1   720   365])
             update_figure_paper_size()
-            print(sprintf('%simgs/ABC_comp_U_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('%simgs/ABC_comp_U_L_%d_%s_box%d_%d_%s_%d',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
             
             ax = figure(3);
             cntr_lvls = linspace(min(nanmean(To_prime,3),[],'all'),max(nanmean(To_prime,3),[],'all'),30);
@@ -109,12 +109,12 @@ for i = 1:length(year_vec)
 %             set(th,'units','normalized','fontsize',20,'backgroundcolor','w')
             set(gcf,'color','w','position',[1     1   720   365])
             update_figure_paper_size()
-            print(sprintf('%simgs/ABC_comp_To_L_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('%simgs/ABC_comp_To_L_%d_%s_box%d_%d_%s_%d',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
             
             
         case 'alphabeta'
             
-            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,model_str,year))
+            load(sprintf('ABC_terms_%d_%sfilt_%s%s_box%d_%d_%s_%d',L/1000,con_str,fft_str,filter_type,box_num,er_box_num,model_str,year))
              
             figure(1)
             ax = subplot(2,3,1);
@@ -149,7 +149,7 @@ for i = 1:length(year_vec)
             
             set(gcf,'color','w','position',[61 221 1359 581])
             update_figure_paper_size()
-            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_comp_L_%d_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year),'-dpdf')
+            print(sprintf('/Users/ssroka/MIT/Research/eddyFlux/imgs/ABC_comp_L_%d_%s_box%d_%d_%s_%d',L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
             
     end
     

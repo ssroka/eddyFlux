@@ -16,3 +16,11 @@ lon_box = lon(lon_box_TF);
 
 n = length(lat_box);
 m = length(lon_box);
+
+lat_er_box_TF = lat>=er_box(1,1) & lat<=er_box(1,2);
+lon_er_box_TF = lon>=er_box(2,1) & lon<=er_box(2,2);
+
+% given a 2D array that is is of the box_opt size, use this to index out
+% the error box elements
+lat_box_2_er_TF = lat_er_box_TF(lat_box_TF);
+lon_box_2_er_TF = lon_er_box_TF(lon_box_TF);

@@ -59,9 +59,9 @@ end
 
 update_figure_paper_size()
 if all(abs(abCD_factor-1)<1e-10)
-    print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d',data_base,L/1000,filter_type,box_num,model_str,year),'-dpdf')
+    print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%d_%s_%d',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year),'-dpdf')
 else
-    print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
+    print(sprintf('%simgs/cmp_model_ERA5_%d_%s_box%d_%d_%s_%d_abCDFAC_%s',data_base,L/1000,filter_type,box_num,er_box_num,model_str,year,strrep(num2str(abCD_factor),'.','_')),'-dpdf')
 end
 
 
