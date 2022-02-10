@@ -55,7 +55,7 @@ model_str = cntr1.model_str; % doesn't matter which
 m = zeros(length(cntr),3); % cols: red blue all
 p_corr= zeros(length(cntr),3); % cols: red blue all
 d_km = d*111;
-for cntr_id = 5
+for cntr_id = 6
     close all
     %     figure(10)
     %     for i = 1:length(year_vec)
@@ -93,8 +93,8 @@ for cntr_id = 5
     set(lh,'interpreter','latex');
     m(cntr_id,c) = [1 0]*(corrcoef(d_km(cntr_id,:),HF(:)')*[0;1]);
     
-    update_figure_paper_size()
-    print(sprintf('imgs/ssh_length_vs_HF_box%d_%s_%d_%d_%d_allyears',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
+% % % %     update_figure_paper_size()
+% % % %     print(sprintf('imgs/ssh_length_vs_HF_box%d_%s_%d_%d_%d_allyears',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
     
     figure(1)
     % include p value in legend
@@ -182,8 +182,8 @@ set(gcf,'color','w','position',[1         215        1041         587])
 lh = legend(g);
 set(lh,'interpreter','latex','location','southeast','fontsize',20);
 
-update_figure_paper_size()
-print(sprintf('imgs/corr_ssh_length_vs_HF_box%d_%s_%d_%d_%d_allyears',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
+% % % update_figure_paper_size()
+% % % print(sprintf('imgs/corr_ssh_length_vs_HF_box%d_%s_%d_%d_%d_allyears',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
 
 
 

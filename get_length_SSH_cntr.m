@@ -26,7 +26,8 @@ plot_all_ABC_vs_year = false;
 plot_all_QandC = false;
 plot_ABC_comp = false;
 
-box_num = 3;
+box_num = 6;
+er_box_num = 3;
 
 switch box_num
     case 1
@@ -39,6 +40,13 @@ switch box_num
         box_opt = [30 41.5; 142.5 153];
     case 5
         box_opt = [30 41.5; 153 169];
+    case 6
+        box_opt = [34 38; 142.5 169];
+end
+
+switch er_box_num
+    case 3
+        er_box = [35.75 41.5; 142.5 155.7500];% [30 41.5; 142.5 169];%
 end
 
 model_str = 'beta';
@@ -105,9 +113,12 @@ addpath(['/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns'])
 % cntr = [0.3:0.1:0.7];
 
 
+% % % 
+% % % cntr = [0.4 0.4];
+% % % cntr_plot = [-0.2:0.2:1];
 
-cntr = [0.4 0.4];
 cntr_plot = [-0.2:0.2:1];
+cntr = [0.3:0.05:0.5];
 
 %% filter set up
 load('env_const.mat')
@@ -229,11 +240,12 @@ for j = 1:length(year_vec)
     
     %     update_figure_paper_size()
     %     print(sprintf('imgs/ssh_%d',year),'-dpdf')
+    save(sprintf('interm_%d',year),'d','HF')
 end
 
 d = d/size(SSH_mat,3);
 
-save(sprintf('small_SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
+save(sprintf('REVISION_small_SSH_length_box%d_%d_%d',box_num,year_vec(1),year_vec(end)))
 
 %%
 %{
