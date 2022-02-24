@@ -14,9 +14,9 @@ for i = 1:length(year_vec)
     
     if calc_alpha_beta_CD_flag
         
-        [abCD,FFINAL] = fmincon(@(abCd) optimize_alpha_beta_CD(abCd,year_vec(i),lat_patch_2_box_TF,lon_patch_2_box_TF,lat_box_2_er_TF,lon_box_2_er_TF,L,filter_type,box_num,er_box_num,model_str),abCD0,[],[],[],[],LB,UB,[],options);
+        [abCD,FFINAL] = fmincon(@(abCd) optimize_alpha_beta_CD(abCd,year_vec(i),lat_patch_2_box_TF,lon_patch_2_box_TF,lat_box_2_er_TF,lon_box_2_er_TF,L,filter_type,box_num,er_box_num,model_str,reanalysis_src),abCD0,[],[],[],[],LB,UB,[],options);
         
-        save(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,year_vec(i)),'abCD','FFINAL','box_opt');
+        save(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,reanalysis_src,year_vec(i)),'abCD','FFINAL','box_opt');
         fprintf('saved %d\n',year_vec(i))
         [abCD0 abCD]
         
@@ -31,8 +31,8 @@ for i = 1:length(year_vec)
         
         year = year_vec(i);
         
-        filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
-        load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,year_vec(i)),'abCD','FFINAL','box_opt');
+        filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%s_%d',L/1000,filter_type,box_num,model_str,reanalysis_src,year);
+        load(sprintf('opt_abCD_%sfilt_%s_L_%d_box%d_%d_%s_%s_%d',con_str,filter_type,L/1000,box_num,er_box_num,model_str,reanalysis_src,year_vec(i)),'abCD','FFINAL','box_opt');
 
         abCD = abCD.*abCD_factor;
         

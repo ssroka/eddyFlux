@@ -1,16 +1,26 @@
-function [] = make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str)
+function [] = make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str,er_box,reanalysis_src)
 %% begin optimizing for CD and alpha
-files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
-    'SST_patch','lat','lon','patch_lat','patch_lon');
+if strcmp(reanalysis_src,'ERA5')
+    files_for_size =  load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
+        'SST_patch','lat','lon','patch_lat','patch_lon');
+else
+    files_for_size =  load(sprintf('%sNCEP_patch_data_%d.mat',data_src,2003),...
+        'SST_patch','lat','lon','patch_lat','patch_lon');
+end
 
 setup_lat_lon_vec;
 constant_vals = load('env_const');
 for i = 1:length(year_vec)
     year = year_vec(i);
     clearvars -except year M data_src m n constant_vals L filter_type box_opt...
-        dx cf year_vec lat_patch_2_box_TF lon_patch_2_box_TF lat_box lon_box debug_flag box_num model_str
+        dx cf year_vec lat_patch_2_box_TF lon_patch_2_box_TF lat_box lon_box ...
+        debug_flag box_num model_str er_box reanalysis_src
     
-    dataFile = sprintf('%sERA5_patch_data_%d.mat',data_src,year);
+    if strcmp(reanalysis_src,'ERA5')
+        dataFile = sprintf('%sERA5_patch_data_%d.mat',data_src,year);
+    else
+        dataFile = sprintf('%sNCEP_patch_data_%d.mat',data_src,year);
+    end
     load(dataFile,'time','SST_patch','U_mag','t2m_patch',...
         'qo_patch','qa_patch','sshf_patch','slhf_patch')
             
@@ -28,7 +38,7 @@ for i = 1:length(year_vec)
             fprintf('getting SST prime and U_bar for time step %d of %d\n',tt,p)
     end
     
-    filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
+    filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%s_%d',L/1000,filter_type,box_num,model_str,reanalysis_src,year);
     switch model_str
         case 'alpha'
         as_multiplier = constant_vals.rho_a.*constant_vals.c_p_air.*U_mag(lon_patch_2_box_TF,lat_patch_2_box_TF,:).*(SST_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:)-t2m_patch(lon_patch_2_box_TF,lat_patch_2_box_TF,:));

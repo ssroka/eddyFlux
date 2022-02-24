@@ -8,28 +8,28 @@ year_bounds = [2003 2018];
 
 shift_text_vert = [zeros(1,16)];
 shift_text_horiz = ones(1,16)*50;
-% 2004
-shift_text_vert(2) = -1.5;
-shift_text_horiz(2) = -250;
-% 2005
-shift_text_vert(3) = 1.5;
-shift_text_horiz(3) = -235;
-% 2006
-shift_text_vert(4) = -1.5;
-% shift_text_horiz(4) = -180;
-% 2008
-shift_text_vert(6) = 0;
-shift_text_horiz(6) = -250;
-% 2010
-shift_text_horiz(8) = -250;
-% 2013
-shift_text_vert(11) = 2.1;
-shift_text_horiz(11) = -40;
-% 2014
-shift_text_vert(12) = -2.2;
-shift_text_horiz(12) = -125;
-% 2016
-shift_text_horiz(14) = -250;
+% % % % 2004
+% % % shift_text_vert(2) = -1.5;
+% % % shift_text_horiz(2) = -250;
+% % % % 2005
+% % % shift_text_vert(3) = 1.5;
+% % % shift_text_horiz(3) = -235;
+% % % % 2006
+% % % shift_text_vert(4) = -1.5;
+% % % % shift_text_horiz(4) = -180;
+% % % % 2008
+% % % shift_text_vert(6) = 0;
+% % % shift_text_horiz(6) = -250;
+% % % % 2010
+% % % shift_text_horiz(8) = -250;
+% % % % 2013
+% % % shift_text_vert(11) = 2.1;
+% % % shift_text_horiz(11) = -40;
+% % % % 2014
+% % % shift_text_vert(12) = -2.2;
+% % % shift_text_horiz(12) = -125;
+% % % % 2016
+% % % shift_text_horiz(14) = -250;
 %{
 % cntr_id = 1
 shift_text_vert = [0 +0.3 -0.3 zeros(1,13)];
@@ -51,11 +51,55 @@ cntr = [cntr1.cntr cntr2.cntr];
 d = [cntr1.d;cntr2.d];
 HF = cntr1.HF; % doesn't matter which
 year_vec = cntr1.year_vec; % doesn't matter which
+
+% % % % temp code ------------------
+% % % temp_years = 2003:2018;
+% % % cntr = [0.3:0.05:0.5];
+% % % d = zeros(length(cntr),length(temp_years));
+% % % HF = zeros(1,length(temp_years));
+% % % for yy = 1:length(temp_years)
+% % %     cy = load(sprintf('interm_%d.mat',temp_years(yy)));
+% % %     if yy<=5
+% % %         HF(yy) = cy.HF(yy);
+% % %         d(:,yy) = cy.d(:,yy)/121;% to replace d = d/size(SSH_mat,3);
+% % %     else
+% % %         HF(yy) = cy.HF(yy-5);
+% % %         d(:,yy) = cy.d(:,yy-5)/121;% to replace d = d/size(SSH_mat,3);
+% % %     end
+% % % end
+% % % year_vec = temp_years;
+% % % year_bounds(2) = year_vec(end);
+% % % % temp code ------------------
+
+% temp code ------------------
+
+% % N
+% h_3_boxes_N = load('HF_3_boxes_9');
+% HF = h_3_boxes_N.HF;
+
+% % M
+% h_3_boxes_M = load('HF_3_boxes_8');
+% HF = h_3_boxes_M.HF;
+% 
+% % S
+% h_3_boxes_S = load('HF_3_boxes_7');
+% HF = h_3_boxes_S.HF;
+% 
+% % N-S
+h_3_boxes_N = load('HF_3_boxes_9');
+h_3_boxes_S = load('HF_3_boxes_7');
+HF = h_3_boxes_N.HF-h_3_boxes_S.HF;
+
+
+% temp code ------------------
+
+
+
 model_str = cntr1.model_str; % doesn't matter which
 m = zeros(length(cntr),3); % cols: red blue all
 p_corr= zeros(length(cntr),3); % cols: red blue all
 d_km = d*111;
-for cntr_id = 6
+for cntr_id = 5
     close all
     %     figure(10)
     %     for i = 1:length(year_vec)
@@ -159,9 +203,9 @@ for cntr_id = 6
     set(lh,'interpreter','latex','location','southwest','fontsize',20);
     
 
-    
-    update_figure_paper_size()
-    print(sprintf('imgs/ssh_length_vs_HF_box%d_%s_%d_%d_%d_redblue',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
+% % %     
+% % %     update_figure_paper_size()
+% % %     print(sprintf('imgs/ssh_length_vs_HF_box%d_%s_%d_%d_%d_redblue',box_num,model_str,year_vec(1),year_vec(end),cntr_id),'-dpdf')
     
     
     

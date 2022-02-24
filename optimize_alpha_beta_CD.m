@@ -1,10 +1,10 @@
-function [mean_er] = optimize_alpha_beta_CD(abCD,year,lat_patch_2_box_TF,lon_patch_2_box_TF,lat_box_2_er_TF,lon_box_2_er_TF,L,filter_type,box_num,er_box_num,model_str)
+function [mean_er] = optimize_alpha_beta_CD(abCD,year,lat_patch_2_box_TF,lon_patch_2_box_TF,lat_box_2_er_TF,lon_box_2_er_TF,L,filter_type,box_num,er_box_num,model_str,reanalysis_src)
 %{
 
 
 %}
 
-filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%d',L/1000,filter_type,box_num,model_str,year);
+filename = sprintf('Qs_QL_optimization_data_L_%d_filt_%s_box%d_%s_%s_%d',L/1000,filter_type,box_num,model_str,reanalysis_src,year);
 
 switch model_str
     case 'alpha'

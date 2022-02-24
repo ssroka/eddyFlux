@@ -1,8 +1,11 @@
 
-
-
+if strcmp(reanalysis_src,'ERA5')
 load(sprintf('%sERA5_patch_data_%d.mat',data_src,2003),...
     'lat','lon','patch_lat','patch_lon');
+else
+    load(sprintf('%sNCEP_patch_data_%d.mat',data_src,2003),...
+    'lat','lon','patch_lat','patch_lon');
+end
 
 lat_box_TF = lat>=box_opt(1,1) & lat<=box_opt(1,2);
 lon_box_TF = lon>=box_opt(2,1) & lon<=box_opt(2,2);

@@ -16,16 +16,27 @@ addpath(data_base)
 addpath([data_base 'get_CD_alpha'])
 addpath('/Users/ssroka/Documents/MATLAB/mpm/sandbox/NayarFxns')
 
-% add path to ERA5 data
-addpath([data_base 'ERA5_data/'])
-data_src =[data_base  'ERA5_data/'];
+
 
 %% USER input
-year_vec = [2003 2007];
+year_vec = [2003];
 L        = 250000; % m
 filter_type = 'fft'; % filter type 'lanczos' or 'boxcar' or 'fft'
 box_num = 3;
 er_box_num = 3;
+
+reanalysis_src = 'NCEP';% 'ERA5' 'NCEP'
+
+if strcmp(reanalysis_src,'ERA5')
+    % add path to ERA5 data
+    addpath([data_base 'ERA5_data/'])
+    data_src =[data_base  'ERA5_data/'];
+else
+    % add path to NCEP data
+    addpath([data_base 'NCEP_data/'])
+    data_src =[data_base  'NCEP_data/'];
+end
+
 for abCD_fac_vec = [1]
 intvl = 1; % look at every intvl'th ti mpepoint
 model_str = 'beta'; % 'alpha' 'beta' 'alphabeta'
@@ -87,7 +98,7 @@ for ii_model_str = 1:length(model_str_cell)
     
     switch er_box_num
         case 3
-            er_box = [35.75 41.5; 142.5 155.7500];% [30 41.5; 142.5 169];%
+            er_box = [30 41.5; 142.5 169];% [35.75 41.5; 142.5 155.7500];
     end
     
     if alpha_pos_flag
@@ -131,17 +142,22 @@ for ii_model_str = 1:length(model_str_cell)
     end
     %% RUN
     setup_lat_lon_vec;
-    load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
-        'lat','lon','patch_lat','patch_lon','sshf_patch','slhf_patch');
+    if strcmp(reanalysis_src,'ERA5')
+        load(sprintf('%sERA5_patch_data_%d.mat',data_src,year_vec(1)),...
+            'lat','lon','patch_lat','patch_lon','sshf_patch','slhf_patch');
+    else
+        load(sprintf('%sNCEP_patch_data_%d.mat',data_src,year_vec(1)),...
+            'lat','lon','patch_lat','patch_lon','sshf_patch','slhf_patch');
+    end
     % only used to get the fft filter sampling rate;
     d_lat = abs(lat(2)-lat(1));
     m_per_deg = 111320;
     dx = abs(d_lat*m_per_deg);
     
     if ~(plot_all_alpha_beta_CD || plot_all_ABC_vs_year || plot_all_QandC || plot_ABC_comp || calc_model_ERA_rms_err_flag)
-%         make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str);
-        get_CD_a_b_eddyFlux;
-        calc_ABC_eddyFlux;
+%         make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str,er_box,reanalysis_src);
+%         get_CD_a_b_eddyFlux;
+%         calc_ABC_eddyFlux;
         plot_ABC_eddyFlux;
     else
         if plot_all_alpha_beta_CD
