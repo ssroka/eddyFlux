@@ -37,16 +37,16 @@ else
     data_src =[data_base  'NCEP_data/'];
 end
 
-for abCD_fac_vec = [1]
+for abCD_fac_vec = [-10 -8 -5 -4 -2 -0.5 1 0.5 2 4 5 8 10]
 intvl = 1; % look at every intvl'th ti mpepoint
 model_str = 'beta'; % 'alpha' 'beta' 'alphabeta'
 load('env_const.mat'); % load rho_a and c_p_air
 
 debug_flag = false;
 % plot_flag = false;
-calc_alpha_beta_CD_flag = true;
-plot_model_ERA_err_flag = true;
-calc_model_ERA_rms_err_flag = false;
+calc_alpha_beta_CD_flag = false;
+plot_model_ERA_err_flag = false;
+calc_model_ERA_rms_err_flag = true;
 alpha_pos_flag = false;
 beta_pos_flag = false;
 fft_first_flag = true; % don't touch!!
@@ -155,9 +155,9 @@ for ii_model_str = 1:length(model_str_cell)
     dx = abs(d_lat*m_per_deg);
     
     if ~(plot_all_alpha_beta_CD || plot_all_ABC_vs_year || plot_all_QandC || plot_ABC_comp || calc_model_ERA_rms_err_flag)
-%         make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str,er_box,reanalysis_src);
-%         get_CD_a_b_eddyFlux;
-%         calc_ABC_eddyFlux;
+        make_multipliers_eddyFlux(year_vec,L,data_src,filter_type,box_num,box_opt,cf,dx,debug_flag,model_str,er_box,reanalysis_src);
+        get_CD_a_b_eddyFlux;
+        calc_ABC_eddyFlux;
         plot_ABC_eddyFlux;
     else
         if plot_all_alpha_beta_CD
